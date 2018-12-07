@@ -6,10 +6,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 
-class JapcToggleButtonLogic(QPushButton):
+class JapcToggleButton(QPushButton):
 
     def __init__(self, lsa, parameter=None, fromLSA=True, text_on="Enabled", text_off="Disabled", parent=None, **kwargs):
-        super(JapcToggleButtonLogic, self).__init__(parent=parent, **kwargs)
+        super(JapcToggleButton, self).__init__(parent=parent, **kwargs)
 
         self.lsa = lsa.lsa
         self.japc = lsa.japc
@@ -31,17 +31,11 @@ class JapcToggleButtonLogic(QPushButton):
 
         self.setCheckable(True)
         self.setText("Inactive")
-        self.setStyleSheet("""
-            QPushButton {
-                border: none;
-                background: none;
-                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                 stop: 0 lightgray, stop: 0.32 rgba(63, 63, 63, 255),
-                                 stop: 0.33 rgba(31, 31, 31, 255), stop: 0.60 rgba(31, 31, 31, 255), 
-                                 stop: 1 dimgray);}
-        """)
+        self.setObjectName("inactive")
+        with open("res/button_stylesheet.qss", "r") as fh:
+            self.setStyleSheet(fh.read())
 
-        self.setFixedSize(80, 30)
+        self.setFixedSize(100, 40)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
         self.toggled.connect(self.toggle)
@@ -75,33 +69,15 @@ class JapcToggleButtonLogic(QPushButton):
             glow.setColor(QColor("green"))
             self.setGraphicsEffect(glow)
             self.setText(self.text_on)
-            self.setStyleSheet("""
-                QPushButton {
-                    color: white;
-                    border: none;
-                    background: none;
-                    font-size: 11px;
-                    font-weight: bold;
-                    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 lightgreen, stop: 0.32 rgba(63, 63, 63, 255),
-                                      stop: 0.33 rgba(31, 31, 31, 255), stop: 0.60 rgba(31, 31, 31, 255), 
-                                      stop: 1 green);}
-            """)
+            self.setObjectName("enabled")
+            with open("res/button_stylesheet.qss", "r") as fh:
+                self.setStyleSheet(fh.read())
         else:
             self.setGraphicsEffect(None)
             self.setText(self.text_off)
-            self.setStyleSheet("""
-                QPushButton {
-                    color: white;
-                    border: none;
-                    background: none;
-                    font-size: 11px;
-                    font-weight: bold;
-                    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 lightcoral, stop: 0.32 rgba(63, 63, 63, 255),
-                                      stop: 0.33 rgba(31, 31, 31, 255), stop: 0.60 rgba(31, 31, 31, 255), 
-                                      stop: 1 red);}
-            """)
+            self.setObjectName("disabled")
+            with open("res/button_stylesheet.qss", "r") as fh:
+                self.setStyleSheet(fh.read())
 
 
     @pyqtSlot(str)

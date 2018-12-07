@@ -4,6 +4,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
+from lsa_dummy import LsaDummy
 from Controllers.Controller_800MHz import Controller800
 
 
@@ -13,6 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         super().__init__()
 
+        self.lsa = LsaDummy()
         self.initUi()
 
 
@@ -21,6 +23,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # WINDOW PROPERTIES
         self.setWindowTitle("PyQt5 Offline Blueprint")
         self.setGeometry(100, 100,800, 600)
+        with open("res/application_stylesheet.qss", "r") as fh:
+            self.setStyleSheet(fh.read())
 
         # ADD SPLITTER
         splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
