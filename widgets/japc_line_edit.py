@@ -10,9 +10,10 @@ from PyQt5.QtWidgets import *
 
 class JapcLineEdit(QLineEdit):
 
-    def __init__(self, lsa, parameter=None, offset=lambda: 0, getter=None, setter=None, fromLSA=True, dtype=int):
+    def __init__(self, lsa, parameter=None, offset=lambda: 0, getter=None, setter=None, fromLSA=True,
+                 dtype=int, **kwargs):
 
-        super(JapcLineEdit, self).__init__()
+        super(JapcLineEdit, self).__init__(**kwargs)
 
         self.lsa = lsa.lsa
         self.japc = lsa.japc
@@ -39,9 +40,9 @@ class JapcLineEdit(QLineEdit):
         self.is_changed = False
         self.trim_value = deque(maxlen=2)
 
-        self.setFixedSize(80, 30)
+        # self.setFixedSize(90, 35)
         self.setFont(QFont("Nimbus Sans", pointSize=11, weight=QFont.Bold))
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        # self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.textEdited.connect(self.italize_text)
         self.editingFinished.connect(self.normalize_text)

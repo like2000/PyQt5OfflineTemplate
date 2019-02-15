@@ -1,14 +1,16 @@
-from collections import deque
 from abc import abstractmethod
+from collections import deque
 
-from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 
 class JapcToggleButton(QPushButton):
 
-    def __init__(self, lsa, parameter=None, fromLSA=True, text_on="Enabled", text_off="Disabled", parent=None, **kwargs):
+    def __init__(self, lsa, parameter=None, fromLSA=True, text_on="Enabled", text_off="Disabled", parent=None,
+                 **kwargs):
+
         super(JapcToggleButton, self).__init__(parent=parent, **kwargs)
 
         self.lsa = lsa.lsa
@@ -35,12 +37,11 @@ class JapcToggleButton(QPushButton):
         with open("res/button_stylesheet.qss", "r") as fh:
             self.setStyleSheet(fh.read())
 
-        self.setFixedSize(100, 40)
+        self.setFixedSize(90, 35)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
         self.toggled.connect(self.toggle)
         self.clicked.connect(self.set_changed)
-
 
     def update_parameter(self, parameter, fromLSA=True):
 
@@ -51,15 +52,12 @@ class JapcToggleButton(QPushButton):
         self.japc.add_subscribe(parameter, fromLSA=False)
         self.japc.newDataReceived.connect(self.update_value)
 
-
     def update_changed(self, value):
         self.trim_value.append(value)
         self.is_changed = False
 
-
     def set_changed(self):
         self.is_changed = True
-
 
     def toggle(self, checked):
         if checked:
@@ -70,15 +68,12 @@ class JapcToggleButton(QPushButton):
             self.setGraphicsEffect(glow)
             self.setText(self.text_on)
             self.setObjectName("enabled")
-            with open("res/button_stylesheet.qss", "r") as fh:
-                self.setStyleSheet(fh.read())
+            self.setStyle(self.style())
         else:
             self.setGraphicsEffect(None)
             self.setText(self.text_off)
             self.setObjectName("disabled")
-            with open("res/button_stylesheet.qss", "r") as fh:
-                self.setStyleSheet(fh.read())
-
+            self.setStyle(self.style())
 
     @pyqtSlot(str)
     def update_value(self, parameter):
@@ -101,7 +96,6 @@ class JapcToggleButton(QPushButton):
             self.toggle(self.isChecked())
             self.update_changed(self.isChecked())
 
-
     @abstractmethod
     def lsa_set_value(self):
 
@@ -110,7 +104,6 @@ class JapcToggleButton(QPushButton):
 
             for p in self.parameter:
                 self.lsa.trim_settings(p, value)
-
 
     @abstractmethod
     def lsa_revert_value(self):

@@ -1,6 +1,6 @@
 
 
-background: gray;
-color: white;
+background: ghostwhite;
+color: dimgray;
 font-size: 12px;
 font-weight: bold;

@@ -1,51 +1,24 @@
 import sys
 
-from PyQt5 import QtGui
-from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 
-from lsa_dummy import LsaDummy
-from Controllers.Controller_800MHz import Controller800
+from sps_window import SPSWindow
+from dummies.lsa_dummy import LsaDummy
+from controllers.RFBucket import RFBucket
+from controllers.Controller_200MHz import Controller200
+from controllers.Controller_800MHz import Controller800
 
 
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindow(SPSWindow):
 
     def __init__(self):
 
-        super().__init__()
+        super().__init__(geometry=(200, 200, 1200, 800))
 
         self.lsa = LsaDummy()
-        self.initUi()
-
-
-    def initUi(self):
-
-        # WINDOW PROPERTIES
-        self.setWindowTitle("PyQt5 Offline Blueprint")
-        self.setGeometry(100, 100,800, 600)
-        with open("res/application_stylesheet.qss", "r") as fh:
-            self.setStyleSheet(fh.read())
-
-        # ADD SPLITTER
-        splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        self.setCentralWidget(splitter)
-
-        # ADD LAYOUTS TO SPLITTERS
-        self.leftSplit = QtWidgets.QWidget()
-        splitter.addWidget(self.leftSplit)
-
-        self.tabWidget = QtWidgets.QTabWidget()
-        splitter.addWidget(self.tabWidget)
-
-
-        # ASSEMBLE TABS
+        rfbucket = RFBucket(self)
+        controller200 = Controller200(self)
         controller800 = Controller800(self)
-
-
-        splitter.setSizes([200, 600])
-
-        self.show()
-
 
 if __name__ == '__main__':
 
