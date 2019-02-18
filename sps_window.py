@@ -34,7 +34,7 @@ class SPSWindow(QtWidgets.QMainWindow):
         self.tabWidget = QtWidgets.QTabWidget()
         splitter.addWidget(self.tabWidget)
 
-        splitter.setSizes([300, 600])
+        splitter.setSizes((300, 600))
 
         self.show()
 

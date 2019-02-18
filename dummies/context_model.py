@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from dummies.cards_widget import CardWidget
 
 
-class CardsModel(QAbstractListModel):
+class ContextModel(QAbstractListModel):
 
     def __init__(self, parent=None, *args):
 

@@ -1,22 +1,18 @@
 import sys
-import pandas as pd
 
-from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 
-from dummies.cards_model import CardsModel
-from sps_window import SPSWindow
-from dummies.lsa_dummy import LsaDummy
-
-from controllers.RFBucket import RFBucket
 from controllers.Controller_200MHz import Controller200
 from controllers.Controller_800MHz import Controller800
+from controllers.RFBucket import RFBucket
+from dummies.cards_model import CardsModel
+from dummies.lsa_dummy import LsaDummy
+from sps_window import SPSWindow
 
 
 class MainWindow(SPSWindow):
 
     def __init__(self):
-
         super().__init__(geometry=(200, 200, 1200, 800))
 
         self.lsa = LsaDummy()
@@ -48,8 +44,8 @@ class MainWindow(SPSWindow):
         # self.configWidget.setLayout(layout)
         # layout.addWidget(self.table_view)
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     win = MainWindow()
     sys.exit(app.exec_())
