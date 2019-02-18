@@ -1,12 +1,11 @@
 from PyQt5 import QtCore
 
 
-class Lsa():
+class Lsa:
     pass
 
 
 class Japc(QtCore.QThread):
-    """"""
     newDataReceived = QtCore.pyqtSignal(str)
 
     def add_subscribe(self, parameter, **kwargs):

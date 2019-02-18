@@ -33,118 +33,30 @@ class RFBucket(QtWidgets.QTabWidget):
         # self.addTab(self.combFilterTab(), "Comb Filter")
         # self.setCurrentIndex(2)
 
-    def voltageTab(self):
-        qwidget = QtWidgets.QWidget()
-        layout = QtWidgets.QGridLayout()
-        qwidget.setLayout(layout)
-
-        # ASSEMBLE ELEMENTS
-        row = -1
-        # self.layout.addWidget(QtWidgets.QH)
-
-        row += 1
-        layout.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed),
-                       row, 0)
-
-        row += 1
-        grid = plt.GridSpec(2, 2, wspace=0.4, hspace=0.3)
-
-        mw = mpl()
-        fig = mw.getFigure()
-        ax1 = fig.add_subplot(grid[0, :])
-        ax2 = fig.add_subplot(grid[1, 0])
-        ax3 = fig.add_subplot(grid[1, 1])
-        fig.tight_layout()
-        # tb = mw.toolbar
-        # tb.
-        layout.addWidget(mw, row, 0, 1, 4)
-
-        row += 1
-        layout.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed),
-                       row, 0)
-
-        return qwidget
-
     def statusTab(self):
 
-        qwidget = QtWidgets.QWidget()
-        layout = QtWidgets.QGridLayout()
-        qwidget.setLayout(layout)
+        qwidget = QtWidgets.QSplitter(QtCore.Qt.Orientation.Vertical)
+        mw1 = mpl()
+        fig = mw1.getFigure()
+        ax1 = fig.subplots(1, 1)
+        # item = mw1.vbox.takeAt(0)
+        # del item
+        fig.tight_layout()
+
+        mw2 = mpl()
+        fig = mw2.getFigure()
+        ax2 = fig.subplots(1, 1)
+        fig.tight_layout()
+
+        qwidget.addWidget(mw1)
+        qwidget.addWidget(mw2)
 
         # ASSEMBLE ELEMENTS
-        row = -1
+        # row = -1
         # self.layout.addWidget(QtWidgets.QH)
 
-        row += 1
-        layout.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding), row, 0)
-
-        row += 1
-        layout.addWidget(QtWidgets.QLabel("Cavity 1"), row, 1)
-        layout.addWidget(QtWidgets.QLabel("Cavity 2"), row, 3)
-
-        row += 1
-        layout.addWidget(self.parent().parent().parent().parent().hLine(), row, 0, 1, 4)
-
-        row += 1
-        self.c1_enable = JapcToggleButton(self.lsa)
-        self.c2_enable = JapcToggleButton(self.lsa)
-        layout.addWidget(QtWidgets.QLabel("Cavity active", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_enable, row, 1)
-        layout.addWidget(self.c2_enable, row, 3)
-
-        row += 1
-        self.c1_vmin = JapcLineEdit(self.lsa)
-        self.c2_vmin = JapcLineEdit(self.lsa)
-        layout.addWidget(QtWidgets.QLabel("Vmin", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_vmin, row, 1)
-        layout.addWidget(self.c2_vmin, row, 3)
-
-        row += 1
-        self.c1_vmax = JapcLineEdit(self.lsa)
-        self.c2_vmax = JapcLineEdit(self.lsa)
-        layout.addWidget(QtWidgets.QLabel("Vmax", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_vmax, row, 1)
-        layout.addWidget(self.c2_vmax, row, 3)
-
-        row += 1
-        self.c1_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/PolarLoopPPM#Enable")
-        self.c2_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/PolarLoopPPM#Enable")
-        layout.addWidget(QtWidgets.QLabel("Polar Loop", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_polarloop, row, 1)
-        layout.addWidget(self.c2_polarloop, row, 3)
-
-        row += 1
-        self.c1_cavityloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/Operation#Enable")
-        self.c2_cavityloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/Operation#Enable")
-        layout.addWidget(QtWidgets.QLabel("Cavity Loop", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_cavityloop, row, 1)
-        layout.addWidget(self.c2_cavityloop, row, 3)
-
-        row += 1
-        self.c1_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/OneTurnFeedbackPPM#Enable")
-        self.c2_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/OneTurnFeedbackPPM#Enable")
-        layout.addWidget(QtWidgets.QLabel("Feedback", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_otf, row, 1)
-        layout.addWidget(self.c2_otf, row, 3)
-
-        row += 1
-        self.c1_feedforward = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/FeedforwardPPM#Enable")
-        self.c2_feedforward = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/FeedforwardPPM#Enable")
-        layout.addWidget(QtWidgets.QLabel("Feedforward", alignment=QtCore.Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_feedforward, row, 1)
-        layout.addWidget(self.c2_feedforward, row, 3)
-
-        row += 1
-        layout.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding),
-                       row, 0)
-
-        # FINALIZE LAYOUT
-        layout.setHorizontalSpacing(40)
-        layout.setVerticalSpacing(10)
-        layout.setColumnStretch(0, 1)
-        layout.setColumnStretch(1, 1)
-        layout.setColumnStretch(2, 1)
-        layout.setColumnStretch(3, 1)
+        # row += 1
+        # layout.addItem(QtWidgets.QSpacerItem(10, 10, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding), row, 0)
 
         return qwidget
 

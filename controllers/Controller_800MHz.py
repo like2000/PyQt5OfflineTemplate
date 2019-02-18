@@ -8,6 +8,7 @@ import pyqtgraph as pg
 import matplotlib.pyplot as plt
 from pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget as mpl
 
+from sps_window import SPSWindow
 from widgets.japc_line_edit import JapcLineEdit
 from widgets.japc_toggle_button import JapcToggleButton
 
@@ -83,7 +84,7 @@ class Controller800(QtWidgets.QTabWidget):
         layout.addWidget(QtWidgets.QLabel("Cavity 2"), row, 3)
 
         row += 1
-        layout.addWidget(self.parent().parent().parent().parent().hLine(), row, 0, 1, 4)
+        layout.addWidget(SPSWindow.h_line(), row, 0, 1, 4)
 
         row += 1
         self.c1_enable = JapcToggleButton(self.lsa)

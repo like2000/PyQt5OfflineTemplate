@@ -8,9 +8,9 @@ class SPSWindow(QtWidgets.QMainWindow):
                  parent=None):
         super().__init__(parent=parent)
 
-        self.initUi(title, geometry)
+        self.init_ui(title, geometry)
 
-    def initUi(self, title, geometry):
+    def init_ui(self, title, geometry):
         """
 
         :param title:
@@ -28,24 +28,32 @@ class SPSWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(splitter)
 
         # ADD SUBWIDGETS
-        self.configWidget = QtWidgets.QWidget()
-        splitter.addWidget(self.configWidget)
+        self.stateWidget = QtWidgets.QWidget()
+        splitter.addWidget(self.stateWidget)
 
         self.tabWidget = QtWidgets.QTabWidget()
         splitter.addWidget(self.tabWidget)
 
-        splitter.setSizes([250, 600])
+        splitter.setSizes([300, 600])
 
         self.show()
 
-    def dummySelector(self):
+    def dummy_selector(self):
         """
 
         :return:
         """
-        list = QtWidgets.QListView
+        self.list = QtWidgets.QListView()
+        self.list.setStyleSheet(
+            "QListView {padding: 8;}"
+            "QListView::item {margin: 8;}"
+            "QListview::item:selected {background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #369, stop:1 #147); color: white;}")
 
-    def hLine(self):
+        self.stateWidget.setLayout(QtWidgets.QVBoxLayout())
+        self.stateWidget.layout().addWidget(self.list)
+
+    @staticmethod
+    def h_line():
         line = QtWidgets.QFrame()
         line.setFrameShape(QtWidgets.QFrame.HLine)
         line.setFrameShadow(QtWidgets.QFrame.Sunken)
