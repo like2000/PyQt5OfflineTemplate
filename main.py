@@ -26,23 +26,7 @@ class MainWindow(SPSWindow):
         controller200 = Controller200(self)
         controller800 = Controller800(self)
 
-        # self.data = pd.DataFrame({
-        #     'Hallo': [0, 1, 2],
-        #     'Du': [2, 3, 4],
-        #     'Dort': [4, 5, 6],
-        #     'Kevin': [6, 7, 8]
-        # })
-        # self.model = CardsModel(self.data)
-        # self.cards_list = QtWidgets.QListView()
-        # self.table_view.setModel(self.model)
-        # # self.table_view.horizontalHeader().setVisible(False)
-        # self.table_view.horizontalHeader().setStretchLastSection(True)
-        # self.table_view.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        # self.table_view.horizontalHeader().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        # self.table_view.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
-        # layout = QtWidgets.QHBoxLayout()
-        # self.configWidget.setLayout(layout)
-        # layout.addWidget(self.table_view)
+        self.centralWidget().setSizes((220, 600))
 
 
 if __name__ == '__main__':
