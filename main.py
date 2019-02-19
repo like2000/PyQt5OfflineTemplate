@@ -6,6 +6,7 @@ from controllers.Controller_200MHz import Controller200
 from controllers.Controller_800MHz import Controller800
 from controllers.RFBucket import RFBucket
 from dummies.cards_model import CardsModel
+from dummies.context_model import ContextModel
 from dummies.lsa_dummy import LsaDummy
 from sps_window import SPSWindow
 
@@ -18,7 +19,10 @@ class MainWindow(SPSWindow):
         self.lsa = LsaDummy()
 
         self.dummy_selector()
-        self.list.setModel(CardsModel(self.list))
+        model = ContextModel(self.list)
+        # model.appendRow(ContextModel.styled_item("LHC1"))
+        self.list.setModel(model)
+        self.list.horizontalHeader().setStretchLastSection(True)
         # self.list.updateGeometry()
         # self.setItemDelegate(CardsView(self))
 

@@ -11,4 +11,9 @@ class GPNWindow(QtWidgets.QMainWindow):
         self.init_ui(title)
 
     def init_ui(self, title):
+        """
+
+        :param title:
+        :return:
+        """
         pass

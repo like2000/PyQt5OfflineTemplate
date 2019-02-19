@@ -43,7 +43,8 @@ class SPSWindow(QtWidgets.QMainWindow):
 
         :return:
         """
-        self.list = QtWidgets.QListView()
+        # self.list = QtWidgets.QListView()
+        self.list = QtWidgets.QTableView()
         self.list.setStyleSheet(
             "QListView {padding: 8;}"
             "QListView::item {margin: 8;}"

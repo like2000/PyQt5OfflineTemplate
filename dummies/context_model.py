@@ -1,70 +1,66 @@
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-from dummies.cards_widget import CardWidget
 
-
-class ContextModel(QAbstractListModel):
+class ContextModel(QStandardItemModel):
 
     def __init__(self, parent=None, *args):
-
         super().__init__(parent=parent)
 
-        self.items_list = [CardWidget() for i in range(10)]
+        self.data_table = pd.DataFrame(columns=["Context", "User", "Type"])
+        print(len(self.data_table.columns))
 
-        self.datatable = pd.DataFrame({
-            'Days': [1, 2, 3, 4],
-            'Exercise': ["one", "two", "three", "four"]
-        })
+    @staticmethod
+    def styled_item(text="", foreground='black', background='white'):
+        item = QStandardItem(text)
+        item.setBackground(QColor(background))
+        item.setForeground(QColor(foreground))
+        item.setFont(QFont("Roboto", pointSize=10, weight=QFont.Bold))
 
-        alpha = 0.4
-        self.color_scheme = [plt.cm.rainbow(i) for i in np.linspace(0, 1, 10)]
-        self.color_scheme = [list(c[:-1]) + [alpha] for c in self.color_scheme]
-        self.color_scheme = map(lambda x: np.int_(np.array(x) * 255), self.color_scheme)
-        self.color_scheme = list(self.color_scheme)
+        return item
+
+    #     self.active_context = ["LHC", "SFT", "AWAKE", "HiRadMat"]
+    #     self.resident_context = ["LHC2", "SFT1"]
+    #     self.existing_context = ["LHCION", "SFTION", "Coast"]
+    #
+    #     self.items_list = self.active_context + self.resident_context + self.existing_context
 
     def rowCount(self, parent: QModelIndex = ...) -> int:
-        return len(self.items_list)
+        return len(self.data_table.index)
 
-    def data(self, index, role=Qt.DisplayRole):
+    def columnCount(self, parent: QModelIndex = ...) -> int:
+        return len(self.data_table.columns)
 
-        parent = self.parent()
-        cw = self.items_list[index.row()]
-        if not parent.indexWidget(index):
-            parent.setIndexWidget(index, cw)
+    # def data(self, index, role=Qt.DisplayRole):
+    #     i, j = index.row(), index.column()
+    #     # val = self.data_table.iloc[i, j]
+    #     if (role == Qt.FontRole):
+    #         font = QFont("Nimbus Sans", 11, QFont.Bold)
+    #         return font
+    #     # elif (role == Qt.SizeHintRole):
+    #     #     size = QSize(10, 10)
+    #     #     return size
+    #     # elif role == Qt.DisplayRole:
+    #     #     return f'{val}'
+    #     # elif (role == Qt.BackgroundRole and val not in self.existing_context):
+    #     #     return QBrush(QColor("black"))
+    #     # elif (role == Qt.BackgroundRole and val in self.existing_context):
+    #     #     return QBrush(QColor("white"))
+    #     # elif (role == Qt.ForegroundRole and val in self.active_context):
+    #     #     return QColor("limegreen")
+    #     # elif (role == Qt.ForegroundRole and val in self.resident_context):
+    #     #     return QColor("orange")
+    #     # elif (role == Qt.ForegroundRole and val in self.existing_context):
+    #     #     return QColor("black")
+    #     else:
+    #         return QVariant()
 
-        if (role == Qt.FontRole):
-            font = QFont("Nimbus Sans", 11, QFont.Bold)
-            return font
-        elif (role == Qt.SizeHintRole):
-            size = QSize(10, cw.height() + 20)
-            return size
-        elif role == Qt.DisplayRole:
-            i = index.row()
-            r, g, b, a = self.color_scheme[i]
-            cw.setStyleSheet(f"""
-                QFrame {{background-color: rgba({r}, {g}, {b}, {a});}}
-                QFrame#Outer {{border: 2px solid lightgray; border-radius: 8px;}}
-            """)
-            cw.textArea.setHtml(self.datatable.to_html())
-            # return f'{self.items_list[i]}'
-        # elif role == Qt.BackgroundRole:
-        #     return QBrush(QColor(*self.color_scheme[index.row()]))
-        # elif (role == Qt.ForegroundRole and index.column() == 0):
-        #     return QColor("orange")
-        # elif (role == Qt.ForegroundRole and index.column() == 1):
-        #     return QColor("limegreen")
-        else:
-            return QVariant()
-
-    # def headerData(self, rowcol, orientation, role):
-    #     if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-    #         return self.datatable.columns[rowcol]
-    #     if orientation == Qt.Vertical and role == Qt.DisplayRole:
-    #         return self.datatable.index[rowcol]
+    # def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> typing.Any:
+    #     # if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+    #     #     return self.items_list[section]
+    #     # if orientation == Qt.Vertical and role == Qt.DisplayRole:
+    #     #     return self.items_list[section]
     #     return None
 
 # class TableModel2(QAbstractTableModel):
@@ -76,14 +72,6 @@ class ContextModel(QAbstractListModel):
 #             self.addresses = []
 #         else:
 #             self.addresses = addresses
-#
-#     def rowCount(self, index=QModelIndex()):
-#         """ Returns the number of rows the model holds. """
-#         return len(self.addresses)
-#
-#     def columnCount(self, index=QModelIndex()):
-#         """ Returns the number of columns the model holds. """
-#         return 2
 #
 #     def data(self, index, role=Qt.DisplayRole):
 #         """ Depending on the index and role given, return data. If not
