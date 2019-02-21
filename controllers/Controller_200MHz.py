@@ -7,9 +7,9 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget as mpl
 
-from sps_window import SPSWindow
-from widgets.japc_line_edit import JapcLineEdit
-from widgets.japc_toggle_button import JapcToggleButton
+from windows.sps_window import SPSWindow
+from japc_widgets.japc_line_edit import JapcLineEdit
+from japc_widgets.japc_toggle_button import JapcToggleButton
 
 
 class Controller200(QtWidgets.QTabWidget):
@@ -23,7 +23,7 @@ class Controller200(QtWidgets.QTabWidget):
     def initUi(self):
         self.setTabPosition(QtWidgets.QTabWidget.East)
         # self.setTabShape(QtWidgets.QTabWidget.Triangular)
-        self.parent().tabWidget.addTab(self, "200 MHz")
+        self.parent().rightTabWidget.addTab(self, "200 MHz")
 
         self.addTab(self.statusTab(), "Status")
         # self.addTab(self.functionsTab(), "Functions")

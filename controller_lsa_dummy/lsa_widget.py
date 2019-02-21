@@ -15,5 +15,12 @@ class LsaWidget(QFrame):
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.tableView)
 
+        self.tableView.verticalHeader().hide()
+        self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tableView.setStyleSheet(
+            "QListView {padding: 8;}"
+            "QListView::item {margin: 8;}"
+            "QListview::item:selected {background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #369, stop:1 #147); color: white;}")
+
         self.model = LsaModel()
         self.tableView.setModel(self.model)

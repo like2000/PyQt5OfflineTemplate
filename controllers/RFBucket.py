@@ -6,7 +6,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 from pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget as mpl
 
-from widgets.japc_line_edit import JapcLineEdit
+from japc_widgets.japc_line_edit import JapcLineEdit
 
 
 class RFBucket(QtWidgets.QTabWidget):
@@ -20,7 +20,7 @@ class RFBucket(QtWidgets.QTabWidget):
     def initUi(self):
         self.setTabPosition(QtWidgets.QTabWidget.East)
         # self.setTabShape(QtWidgets.QTabWidget.Triangular)
-        self.parent().tabWidget.addTab(self, "RF Bucket")
+        self.parent().rightTabWidget.addTab(self, "RF Bucket")
 
         self.addTab(self.statusTab(), "Status")
         # self.addTab(self.functionsTab(), "Functions")

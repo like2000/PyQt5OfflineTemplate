@@ -7,7 +7,7 @@ from controllers.Controller_200MHz import Controller200
 from controllers.Controller_800MHz import Controller800
 from controllers.RFBucket import RFBucket
 from dummies.lsa_dummy import LsaDummy
-from sps_window import SPSWindow
+from windows.sps_window import SPSWindow
 
 
 class MainWindow(SPSWindow):
@@ -18,8 +18,8 @@ class MainWindow(SPSWindow):
         self.lsa = LsaDummy()
 
         lsa_dummy = LsaWidget()
-        self.leftFrame.setLayout(QtWidgets.QVBoxLayout())
-        self.leftFrame.layout().addWidget(lsa_dummy)
+        self.leftTabWidget.setLayout(QtWidgets.QVBoxLayout())
+        self.leftTabWidget.layout().addWidget(lsa_dummy)
 
         # self.create_dummy_selector()
         # self.list.setModel(ContextModel(self.list))

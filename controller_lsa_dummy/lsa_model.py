@@ -1,8 +1,8 @@
 import typing
 
 import pandas as pd
-
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 
 class LsaModel(QAbstractTableModel):
@@ -21,12 +21,28 @@ class LsaModel(QAbstractTableModel):
         return super().insertRow(row, parent)
 
     def data(self, index: QModelIndex, role: int = ...) -> typing.Any:
-        return QVariant()
+        i, j, = index.row(), index.column()
+
+        if (role == Qt.FontRole):
+            font = QFont("Nimbus Sans", 11, QFont.Bold)
+            return font
+        # elif (role == Qt.SizeHintRole):
+        #     size = QSize(10, cw.height() + 20)
+        #     return size
+        elif role == Qt.DisplayRole:
+            # i = index.row()
+            # r, g, b, a = self.color_scheme[i]
+            # cw.setStyleSheet(f"""
+            #            QFrame {{background-color: rgba({r}, {g}, {b}, {a});}}
+            #            QFrame#Outer {{border: 2px solid lightgray; border-radius: 8px;}}
+            #        """)
+            # cw.textArea.setHtml(self.datatable.to_html())
+            return f'{self.data_table.iloc[i, j]}'
+        else:
+            return QVariant()
 
     def columnCount(self, parent: QModelIndex = ...) -> int:
         return len(self.data_table.columns)
 
     def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self.data_table.index)
-
-
