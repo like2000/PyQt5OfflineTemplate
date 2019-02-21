@@ -1,28 +1,23 @@
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
-
 import pickle
+
 import numpy as np
 import pyqtgraph as pg
-import matplotlib.pyplot as plt
+from PyQt5 import QtCore
+from PyQt5 import QtWidgets
 from pyqtgraph.widgets.MatplotlibWidget import MatplotlibWidget as mpl
 
 from widgets.japc_line_edit import JapcLineEdit
-from widgets.japc_toggle_button import JapcToggleButton
 
 
 class RFBucket(QtWidgets.QTabWidget):
 
     def __init__(self, parent=None):
-
         super().__init__(parent=parent)
 
         self.lsa = self.parent().lsa
         self.initUi()
 
     def initUi(self):
-
         self.setTabPosition(QtWidgets.QTabWidget.East)
         # self.setTabShape(QtWidgets.QTabWidget.Triangular)
         self.parent().tabWidget.addTab(self, "RF Bucket")
@@ -34,7 +29,6 @@ class RFBucket(QtWidgets.QTabWidget):
         # self.setCurrentIndex(2)
 
     def statusTab(self):
-
         qwidget = QtWidgets.QSplitter(QtCore.Qt.Orientation.Vertical)
         mw1 = mpl()
         fig = mw1.getFigure()
@@ -61,7 +55,6 @@ class RFBucket(QtWidgets.QTabWidget):
         return qwidget
 
     def functionsTab(self):
-
         qwidget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout()
         qwidget.setLayout(layout)
@@ -74,13 +67,14 @@ class RFBucket(QtWidgets.QTabWidget):
         # ASSEMBLE ELEMENTS
         row = -1
 
-        x = np.linspace(0, 20*np.pi, 1000)
+        x = np.linspace(0, 20 * np.pi, 1000)
         y = np.sin(x)
 
         row += 1
         pw1 = pg.PlotWidget(title="Momentum [GeV/c]")
         ax1 = pg.PlotDataItem(
-            data['t_mom'], data['val_mom'], pen=pg.mkPen(color='r', width=2)) #, symbolPen=None, symbolBrush=pg.mkBrush(color='r'), symbolSize=6)
+            data['t_mom'], data['val_mom'],
+            pen=pg.mkPen(color='r', width=2))  # , symbolPen=None, symbolBrush=pg.mkBrush(color='r'), symbolSize=6)
         pw1.addItem(ax1)
         layout.addWidget(pw1, row, 0, 1, 1)
 
@@ -181,7 +175,6 @@ class RFBucket(QtWidgets.QTabWidget):
         return qwidget
 
     def combFilterTab(self):
-
         qwidget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout()
         qwidget.setLayout(layout)

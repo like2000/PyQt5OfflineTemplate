@@ -1,4 +1,5 @@
 import pandas as pd
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
@@ -9,7 +10,11 @@ class ContextModel(QStandardItemModel):
         super().__init__(parent=parent)
 
         self.data_table = pd.DataFrame(columns=["Context", "User", "Type"])
-        print(len(self.data_table.columns))
+        self.data_table['Context'] = range(0, 3)
+        self.data_table['User'] = range(3, 6)
+        self.data_table['Type'] = range(6, 9)
+        # self.data_table.loc[1, :] = ['1', '2', '3']
+        print(self.data_table.iloc[0, 1])
 
     @staticmethod
     def styled_item(text="", foreground='black', background='white'):
@@ -32,29 +37,48 @@ class ContextModel(QStandardItemModel):
     def columnCount(self, parent: QModelIndex = ...) -> int:
         return len(self.data_table.columns)
 
-    # def data(self, index, role=Qt.DisplayRole):
-    #     i, j = index.row(), index.column()
-    #     # val = self.data_table.iloc[i, j]
-    #     if (role == Qt.FontRole):
-    #         font = QFont("Nimbus Sans", 11, QFont.Bold)
-    #         return font
-    #     # elif (role == Qt.SizeHintRole):
-    #     #     size = QSize(10, 10)
-    #     #     return size
-    #     # elif role == Qt.DisplayRole:
-    #     #     return f'{val}'
-    #     # elif (role == Qt.BackgroundRole and val not in self.existing_context):
-    #     #     return QBrush(QColor("black"))
-    #     # elif (role == Qt.BackgroundRole and val in self.existing_context):
-    #     #     return QBrush(QColor("white"))
-    #     # elif (role == Qt.ForegroundRole and val in self.active_context):
-    #     #     return QColor("limegreen")
-    #     # elif (role == Qt.ForegroundRole and val in self.resident_context):
-    #     #     return QColor("orange")
-    #     # elif (role == Qt.ForegroundRole and val in self.existing_context):
-    #     #     return QColor("black")
-    #     else:
-    #         return QVariant()
+    def data(self, index, role=Qt.DisplayRole):
+        # print(index, role)
+        # i, j = index.row(), index.column()
+        # val = self.data_table.iloc[i, j]
+        # print(i, j, val)
+        if index.isValid():
+            if (role == Qt.FontRole):
+                font = QFont("Nimbus Sans", 11, QFont.Bold)
+                return font
+            #     # elif (role == Qt.SizeHintRole):
+            #     #     size = QSize(10, 10)
+            #     #     return size
+            elif (role == Qt.DisplayRole):
+                #         print(f'{val}')
+                return 'Hello!'
+            elif (role == Qt.BackgroundRole):
+                return QBrush(QColor("black"))
+            # elif (role == Qt.BackgroundRole and val in self.existing_context):
+            #     return QBrush(QColor("white"))
+            elif (role == Qt.ForegroundRole):
+                return QColor("limegreen")
+            # elif (role == Qt.ForegroundRole and val in self.resident_context):
+            #     return QColor("orange")
+            # elif (role == Qt.ForegroundRole and val in self.existing_context):
+            #     return QColor("black")
+        else:
+            return QVariant()
+
+    def appendRow(self, items: list) -> None:
+
+        end = len(self.data_table.index)
+        self.data_table.loc[end, :] = items
+        self.layoutChanged.emit()
+        # self.dataChanged.emit(QModelIndex(), QModelIndex())
+
+    # def insertRow(self, row: int, parent: QModelIndex = ...) -> bool:
+    #
+    #     self.beginInsertRows(QModelIndex(), row, row-1)
+    #     self.data_table.insert(row, {"Context": "", "User": "", "Type": ""})
+    #     self.endInsertRows()
+    #
+    #     return True
 
     # def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> typing.Any:
     #     # if orientation == Qt.Horizontal and role == Qt.DisplayRole:

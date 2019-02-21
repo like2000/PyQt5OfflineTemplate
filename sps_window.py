@@ -28,8 +28,8 @@ class SPSWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(splitter)
 
         # ADD SUBWIDGETS
-        self.stateWidget = QtWidgets.QWidget()
-        splitter.addWidget(self.stateWidget)
+        self.leftFrame = QtWidgets.QWidget()
+        splitter.addWidget(self.leftFrame)
 
         self.tabWidget = QtWidgets.QTabWidget()
         splitter.addWidget(self.tabWidget)
@@ -38,7 +38,7 @@ class SPSWindow(QtWidgets.QMainWindow):
 
         self.show()
 
-    def dummy_selector(self):
+    def create_dummy_selector(self):
         """
 
         :return:
@@ -50,8 +50,8 @@ class SPSWindow(QtWidgets.QMainWindow):
             "QListView::item {margin: 8;}"
             "QListview::item:selected {background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #369, stop:1 #147); color: white;}")
 
-        self.stateWidget.setLayout(QtWidgets.QVBoxLayout())
-        self.stateWidget.layout().addWidget(self.list)
+        self.leftFrame.setLayout(QtWidgets.QVBoxLayout())
+        self.leftFrame.layout().addWidget(self.list)
 
     @staticmethod
     def h_line():
