@@ -3,9 +3,9 @@ import sys
 from PyQt5 import QtWidgets
 
 from controller_lsa_dummy.lsa_widget import LsaWidget
+from controller_rf.rf_widget import RfWidget
 from controllers.Controller_200MHz import Controller200
 from controllers.Controller_800MHz import Controller800
-from controllers.RFBucket import RFBucket
 from dummies.lsa_dummy import LsaDummy
 from windows.sps_window import SPSWindow
 
@@ -35,7 +35,7 @@ class MainWindow(SPSWindow):
         # print(model.data_table)
         # # model.appendRow(ContextModel.styled_item(["LHCBCMS_3Inj_Q20_2018_V1", "LHC1", "Operational"]))
 
-        rfbucket = RFBucket(self)
+        rfbucket = RfWidget(self, 2, 1)
         controller200 = Controller200(self)
         controller800 = Controller800(self)
 
