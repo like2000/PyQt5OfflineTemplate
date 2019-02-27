@@ -46,21 +46,33 @@ class RfBucket():
     def eta(self, value):
         self._eta = value
 
-    def H(self, phi, delta):
+    def H(self, phi, delta, normalized=True):
+        if normalized:
+            conv = 2 * pi * self.h / self.C
+            norm = self.p0 / c * 1 / conv
+        else:
+            norm = 1
+
         H = (
             -1/2 * self.eta * self.beta * c * delta ** 2 +
             c * self.V / (2 * pi * self.p0 * self.h) * (
-                np.cos(phi) - np.cos(self.phi_s) + (phi - self.phi_s) * np.sin(self.phi_s))
+                np.cos(phi) - np.cos(self.phi_s) + (phi - self.phi_s) * np.sin(self.phi_s)) * norm ** 2
         )
 
         return H
 
-    def dp(self, phi):
+    def dp(self, phi, normalized=True):
+        if normalized:
+            conv = 2 * pi * self.h / self.C
+            norm = self.p0 / c * 1 / conv
+        else:
+            norm = 1
+
         A = c * self.V * (phi * np.sin(self.phi_s) - pi * np.sin(self.phi_s) + np.cos(phi) + 1) / \
             (pi * self.beta * c * self.eta * self.h * self.p0)
         A = A.clip(min=0)
 
-        return np.sqrt(A)
+        return np.sqrt(A) * norm
 
     def emittance(self, f, x0, x1, p0=p0):
         conv = 2 * pi * self.h / self.C

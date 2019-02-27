@@ -49,6 +49,8 @@ class RfWidget(QTabWidget):
         momentum = interp
         interp = interp1d(data['t_volt'], data['val_volt'] * 1e6)
         voltage = interp
+        interp = interp1d(data['t_BDot'], data['val_BDot'] * 0.83)
+        bdot = interp
 
         tt = np.linspace(t_mom.min(), t_mom.max(), 500)
         val = momentum(tt)
@@ -61,13 +63,14 @@ class RfWidget(QTabWidget):
         self.rf_bucket.h = 4620
         self.rf_bucket.phi = 0
         self.rf_bucket.phi_s = 0
-        xx = np.linspace(-pi, pi, 200)
-        yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1)
+        sampling = 200
+        xx = np.linspace(-pi, pi, sampling)
+        yy = np.linspace(-self.rf_bucket.dp(xx).max() * 4.1, self.rf_bucket.dp(xx).max() * 4.1, sampling)
         XX, YY = np.meshgrid(xx, yy)
-        conts = [mplw.axes[1].contourf(XX, YY, self.rf_bucket.H(XX, YY), levels=20, cmap='YlGnBu', alpha=0.8)]
-        lines = mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
-                                  xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
-        # mplw.axes[1].set_ylim(-self.rf_bucket.dp(xx).max()*1.1, self.rf_bucket.dp(xx).max()*1.1)
+        conts = [mplw.axes[1].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu', alpha=0.8)]
+        equil = [mplw.axes[1].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu', alpha=0.8)]
+        # lines = mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
+        #                           xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
 
         # Slider
         # ======
@@ -75,28 +78,25 @@ class RfWidget(QTabWidget):
             marker.set_xdata(pos)
 
             self.rf_bucket.p0 = momentum(pos)
+            self.rf_bucket.phi_s = bdot(pos)
             self.rf_bucket.V = voltage(pos)
-            lines[0].set_ydata(-self.rf_bucket.dp(xx))
-            lines[1].set_ydata(+self.rf_bucket.dp(xx))
-            for tp in conts[0].collections:
+            # lines[0].set_ydata(np.ma.masked_equal(-self.rf_bucket.dp(xx), 0))
+            # lines[1].set_ydata(np.ma.masked_equal(+self.rf_bucket.dp(xx), 0))
+            for tp in conts[0].collections + equil[0].collections:
                 tp.remove()
-            conts[0] = mplw.axes[1].contourf(XX, YY, self.rf_bucket.H(XX, YY), levels=20, cmap='YlGnBu', alpha=0.8)
-            # conts.set_data(XX, YY, self.rf_bucket.H(XX, YY))
-            # mplw.axes[1].cla()
-            # yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1)
-            # XX, YY = np.meshgrid(xx, yy)
-            # conts = mplw.axes[1].contourf(XX, YY, self.rf_bucket.H(XX, YY), levels=20, cmap='YlGnBu')
-            # lines = mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
-            #                           xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
+            conts[0] = mplw.axes[1].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu', alpha=0.8)
+            equil[0] = mplw.axes[1].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu', alpha=0.8)
 
+            # mplw.axes[1].relim()
+            # mplw.axes[1].autoscale_view(True, True, True)
             mplw.fig.canvas.draw()
             mplw.fig.canvas.flush_events()
 
         slider = QSlider(Qt.Horizontal)
-        slider.setSingleStep(1000)
+        slider.setRange(0, 100)
         slider.setTickPosition(QSlider.TicksBothSides)
-        slider.setRange(data['t_mom'].min(), data['t_mom'].max())
-        slider.sliderMoved.connect(lambda pos: update(pos))
+        # slider.setRange(data['t_mom'].min(), data['t_mom'].max())
+        slider.sliderMoved.connect(lambda pos: update(pos * data['t_mom'].max()/100))
         qwidget.addWidget(slider)
 
         return qwidget
