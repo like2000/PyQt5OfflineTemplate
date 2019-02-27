@@ -4,8 +4,10 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from scipy.constants import pi
 from scipy.interpolate import interp1d
 
+from controller_rf.rf_bucket import RfBucket
 from widgets.mpl_widget import MplWidget
 
 
@@ -14,7 +16,9 @@ class RfWidget(QTabWidget):
     def __init__(self, parent: QWidget = None, rows: int = 1, cols: int = 1) -> None:
         super().__init__(parent=parent)
 
+        self.rf_bucket = RfBucket(C=6911, gamma_tr=18, p0=26e9)
         self.lsa = self.parent().lsa
+
         self.rows = rows
         self.cols = cols
         self.initUi()
@@ -37,16 +41,38 @@ class RfWidget(QTabWidget):
         # READ SETTINGS
         with open('settings/lsa_values.pkl', 'rb') as fh:
             data = pickle.load(fh, encoding='latin1')
+        t_mom, val_mom = data['t_mom'], data['val_mom']
 
-        interp = interp1d(data['t_mom'], data['val_mom'] * 1e9)
+        # Top plot
+        # ========
+        interp = interp1d(t_mom, val_mom * 1e9)
         momentum = interp
-        tt = np.linspace(data['t_mom'].min(), data['t_mom'].max(),500)
+        tt = np.linspace(t_mom.min(), t_mom.max(), 500)
         val = momentum(tt)
         mplw.axes[0].plot(tt, val)
+        # Bottom plot
+        # ===========
+        self.rf_bucket.V = 4.5e6
+        self.rf_bucket.h = 4620
+        self.rf_bucket.phi = 0
+        self.rf_bucket.phi_s = 0
+        xx = np.linspace(-pi, pi, 200)
+        mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
+                          xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
 
+        # Slider
+        # ======
+        slider = QSlider(Qt.Horizontal)
+        slider.setMinimum(data['t_mom'].min())
+        slider.setMinimum(data['t_mom'].max())
+        slider.setTickInterval(100)
+        slider.setTickPosition(QSlider.TicksBelow)
         qwidget.addWidget(QSlider(Qt.Horizontal))
 
         return qwidget
+
+    def getPlots(self):
+        pass
 
     def functionsTab(self):
         qwidget = QWidget()
@@ -91,18 +117,5 @@ class RfWidget(QTabWidget):
         # </ul>
         # """)
         # ww.setText("""
-        # * Eta\n
-        # * Radial steering correction\n
-        # * Synchrotron frequency""")
-        # font = QtGui.QFont('helvetica', 30, QtGui.QFont.Bold)
-        # ww.setFont(font)
-        # ww.setFontPointSize(80)
-        # ww.setMinimumHeight(200)
-
-        # qwidget = pg.PlotWidget(title="Functions")
-        # ax1 = pg.PlotDataItem(
-        #     x, y, pen=pg.mkPen(color='r', width=2),
-        #     symbol='s', symbolPen=None, symbolBrush=pg.mkBrush(color='r'), symbolSize=6)
-        # qwidget.addItem(ax1)
 
         return qwidget

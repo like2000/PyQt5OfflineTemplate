@@ -1,84 +1,66 @@
 import numpy as np
-from scipy.constants import c, pi
+from scipy.constants import c, e, m_p, pi
 
 from algorithms.pdf_integrators_2d import dblquad
 
 
 class RfBucket():
 
-    def __init__(self) -> None:
-        self.C = 1
-        self.gamma_tr = 1
+    def __init__(self, C=1, gamma_tr=1, p0=1) -> None:
+        """Mass is in eV; p0 is in eV/c"""
+        self.mass = m_p * c ** 2 / e # in eV
 
-        self._V = None
-        self._h = None
-        self._phi = None
-        self._phi_s = None
+        self.C = C
+        self.p0 = p0
+        self.gamma_tr = gamma_tr
 
-        self._p0 = None
-        self._gamma = None
-        self._beta = None
-        self._mass = None
-
-        self._eta = None
+        self.V = 1
+        self.h = 1
+        self.phi = 0
+        self.phi_s = 0
 
     @property
     def p0(self):
-        return
+        """p0 in eV/c"""
+        return self._p0
 
     @p0.setter
     def p0(self, value):
-        pass
+        self._gamma = np.sqrt(1 + (value / self.mass) ** 2)
+        self._beta = np.sqrt(1 - self.gamma**-2)
+        self._p0 = value
 
     @property
     def beta(self):
-        return
-
-    @beta.setter
-    def beta(self, value):
-        pass
+        return self._beta
 
     @property
     def gamma(self):
-        return
-
-    @gamma.setter
-    def gamma(self, value):
-        pass
+        return self._gamma
 
     @property
     def eta(self):
-        return
+        return self.gamma_tr**-2 - self.gamma**-2
 
     @eta.setter
     def eta(self, value):
-        pass
+        self._eta = value
 
-    def g(self, V, p0, phis):
-        def H(phi, delta):
-            return (
-                    -1. / 2 * self.eta * self.beta * c * delta ** 2 +
-                    c * V / (2 * pi * self.p0 * self.h) * (
-                                np.cos(phi) - np.cos(self.phis) + (phi - self.phis) * np.sin(self.phis))
-            )
+    def H(self, phi, delta):
+        H = (
+            -1/2 * self.eta * self.beta * c * delta ** 2 +
+            c * self.V / (2 * pi * self.p0 * self.h) * (
+                np.cos(phi) - np.cos(self.phi_s) + (phi - self.phi_s) * np.sin(self.phi_s))
+        )
 
         return H
 
-    def f(self, V, p0, phis):
-        gamma = np.sqrt(1 + (p0 / self.mass) ** 2)
-        beta = np.sqrt(1 - 1 / gamma ** 2)
-        eta = -gamma ** -2 + self.gamma_tr ** -2
+    def dp(self, phi):
+        A = c * self.V * (phi * np.sin(self.phi_s) - pi * np.sin(self.phi_s) + np.cos(phi) + 1) / \
+            (pi * self.beta * c * self.eta * self.h * self.p0)
+        A = A.clip(min=0)
 
-        def dp(phi):
-            A = c * V * (phi * np.sin(phis) - pi * np.sin(phis) + np.cos(phi) + 1) / (pi * beta * c * eta * self.h * p0)
-            A = A.clip(min=0)
-            return np.sqrt(A)
-
-        #         if A < 0:
-        #             return 0
-        #         else:
-        #             return np.sqrt(A)
-        return dp
+        return np.sqrt(A)
 
     def emittance(self, f, x0, x1, p0=p0):
         conv = 2 * pi * self.h / self.C
