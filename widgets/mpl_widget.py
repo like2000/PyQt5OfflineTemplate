@@ -48,7 +48,7 @@ class MplCanvas(Canvas):
 
 class MplWidget(QtWidgets.QGraphicsView):
 
-    def __init__(self, rows=1, columns=1, parent=None):
+    def __init__(self, rows=1, columns=1, nav_bar=True, parent=None):
         QtWidgets.QWidget.__init__(self, parent)  # Inherit from QWidget
         # super(MplWidget, self).__init__(parent)
         layout = QtWidgets.QVBoxLayout()
@@ -57,7 +57,8 @@ class MplWidget(QtWidgets.QGraphicsView):
         self.canvas = MplCanvas(rows, columns)
         self.navBar = NavigationToolbar(self.canvas, self)
         layout.addWidget(self.canvas)
-        layout.addWidget(self.navBar)
+        if nav_bar:
+            layout.addWidget(self.navBar)
 
         self.fig = self.canvas.figure
         self.axes = self.canvas.figure.axes

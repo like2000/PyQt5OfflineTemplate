@@ -1,5 +1,6 @@
 import pickle
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pyqtgraph as pg
 from PyQt5.QtCore import *
@@ -33,71 +34,100 @@ class RfWidget(QTabWidget):
         # self.setCurrentIndex(2)
 
     def statusTab(self):
-        qwidget = QSplitter(Qt.Vertical)
-
-        mplw = MplWidget(self.rows, self.cols)
-        qwidget.addWidget(mplw)
-
         # READ SETTINGS
+        # =============
         with open('settings/lsa_values.pkl', 'rb') as fh:
             data = pickle.load(fh, encoding='latin1')
         t_mom, val_mom = data['t_mom'], data['val_mom']
 
-        # Top plot
-        # ========
         interp = interp1d(data['t_mom'], data['val_mom'] * 1e9)
         momentum = interp
         interp = interp1d(data['t_volt'], data['val_volt'] * 1e6)
         voltage = interp
         interp = interp1d(data['t_BDot'], data['val_BDot'] * 0.83)
         bdot = interp
-
         tt = np.linspace(t_mom.min(), t_mom.max(), 500)
-        val = momentum(tt)
-        mplw.axes[0].plot(tt, val)
-        marker = mplw.axes[0].axvline(0, c='k', lw=1)
+
+        qwidget = QSplitter(Qt.Vertical)
+        qwidget = QFrame()
+        qwidget.setLayout(QVBoxLayout())
+
+        # Top plot
+        # ========
+        mplw_top = MplWidget(2, 2, nav_bar=False)
+        mplw_top.fig.tight_layout()
+        qwidget.layout().addWidget(mplw_top)
+
+        mplw_top.axes[0].plot(tt, momentum(tt)*1e-9)
+        mplw_top.axes[1].plot(tt, voltage(tt)*1e-6)
+        mplw_top.axes[2].plot(tt, bdot(tt))
+        mplw_top.axes[0].set_ylabel("Momentum [GeV/c]")
+        mplw_top.axes[1].set_ylabel("Voltage [MV]")
+        mplw_top.axes[2].set_ylabel("BDot [?]")
+        # mplw_top.axes[3].plot(tt, val)
+        marker = [ax.axvline(0, c='k', lw=1) for ax in mplw_top.axes]
 
         # Bottom plot
         # ===========
+        mplw = MplWidget(1, 1)
+        qwidget.layout().addWidget(mplw)
+
+        mplw.axes[0].set_facecolor(plt.cm.YlGnBu(256))
+        mplw.axes[0].patch.set_alpha(0.4)
+
         self.rf_bucket.V = 4.5e6
         self.rf_bucket.h = 4620
         self.rf_bucket.phi = 0
         self.rf_bucket.phi_s = 0
         sampling = 200
         xx = np.linspace(-pi, pi, sampling)
-        yy = np.linspace(-self.rf_bucket.dp(xx).max() * 4.1, self.rf_bucket.dp(xx).max() * 4.1, sampling)
+        yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1, sampling)
         XX, YY = np.meshgrid(xx, yy)
-        conts = [mplw.axes[1].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu', alpha=0.8)]
-        equil = [mplw.axes[1].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu', alpha=0.8)]
+        conts = [mplw.axes[0].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu',
+                                       alpha=0.8)]
+        equil = [
+            mplw.axes[0].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu',
+                                 alpha=0.8)]
+
         # lines = mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
         #                           xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
 
         # Slider
         # ======
         def update(pos):
-            marker.set_xdata(pos)
+            [m.set_xdata(pos) for m in marker]
 
             self.rf_bucket.p0 = momentum(pos)
             self.rf_bucket.phi_s = bdot(pos)
             self.rf_bucket.V = voltage(pos)
+
+            yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1, sampling)
+            XX, YY = np.meshgrid(xx, yy)
+            mplw.axes[0].set_ylim(yy[0], yy[-1])
+
             # lines[0].set_ydata(np.ma.masked_equal(-self.rf_bucket.dp(xx), 0))
             # lines[1].set_ydata(np.ma.masked_equal(+self.rf_bucket.dp(xx), 0))
             for tp in conts[0].collections + equil[0].collections:
                 tp.remove()
-            conts[0] = mplw.axes[1].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu', alpha=0.8)
-            equil[0] = mplw.axes[1].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu', alpha=0.8)
+            conts[0] = mplw.axes[0].contourf(XX, YY, np.log(np.abs(self.rf_bucket.H(XX, YY))), levels=20, cmap='YlGnBu',
+                                             alpha=0.8)
+            equil[0] = mplw.axes[0].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0],
+                                            cmap='YlGnBu', alpha=0.8)
 
-            # mplw.axes[1].relim()
-            # mplw.axes[1].autoscale_view(True, True, True)
-            mplw.fig.canvas.draw()
-            mplw.fig.canvas.flush_events()
+            for mw in [mplw_top, mplw]:
+                # mw.axes[1].relim()
+                # mw.axes[1].autoscale_view(True, True, True)
+                mw.fig.canvas.draw()
+                mw.fig.canvas.flush_events()
+                mw.fig.canvas.draw()
+                mw.fig.canvas.flush_events()
 
         slider = QSlider(Qt.Horizontal)
         slider.setRange(0, 100)
         slider.setTickPosition(QSlider.TicksBothSides)
         # slider.setRange(data['t_mom'].min(), data['t_mom'].max())
-        slider.sliderMoved.connect(lambda pos: update(pos * data['t_mom'].max()/100))
-        qwidget.addWidget(slider)
+        slider.sliderMoved.connect(lambda pos: update(pos * data['t_mom'].max() / 100))
+        qwidget.layout().addWidget(slider)
 
         return qwidget
 

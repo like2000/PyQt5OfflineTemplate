@@ -9,12 +9,14 @@ class ContextModel(QStandardItemModel):
     def __init__(self, parent=None, *args):
         super().__init__(parent=parent)
 
-        self.data_table = pd.DataFrame(columns=["Context", "User", "Type"])
-        self.data_table['Context'] = range(0, 3)
-        self.data_table['User'] = range(3, 6)
-        self.data_table['Type'] = range(6, 9)
-        # self.data_table.loc[1, :] = ['1', '2', '3']
-        print(self.data_table.iloc[0, 1])
+        self.data_table = pd.DataFrame(columns=["Context", "User", "State"])
+
+        self.data_table.loc[len(self.data_table), :] = ["LHCBCMS_3Inj_Q20_2018_V1", "LHC1", "ACTIVE"]
+        self.data_table.loc[len(self.data_table), :] = ["LHCBCMS_3Inj_Q20_2018_V1_8b4e", "LHC3", "ACTIVE"]
+        self.data_table.loc[len(self.data_table), :] = ["SFT_PRO_MTE_L4780_2018_V1", "SFTPRO2", "RESIDENT"]
+        self.data_table.loc[len(self.data_table), :] = ["LHC_ION_1Inj_Nominal_Pb82_Q26_2018_V2", "LHCION4", "RESIDENT"]
+        self.data_table.loc[len(self.data_table), :] = ["SFT_PRO_MTE_L4780_2018_V1", "SFTPRO2", "RESIDENT"]
+        self.data_table.loc[len(self.data_table), :] = ["AWAKE_1Inj_FB60_FT850_Q20_2018_V1", "AWAKE", "OPERATIONAL"]
 
     @staticmethod
     def styled_item(text="", foreground='black', background='white'):
@@ -24,12 +26,6 @@ class ContextModel(QStandardItemModel):
         item.setFont(QFont("Roboto", pointSize=10, weight=QFont.Bold))
 
         return item
-
-    #     self.active_context = ["LHC", "SFT", "AWAKE", "HiRadMat"]
-    #     self.resident_context = ["LHC2", "SFT1"]
-    #     self.existing_context = ["LHCION", "SFTION", "Coast"]
-    #
-    #     self.items_list = self.active_context + self.resident_context + self.existing_context
 
     def rowCount(self, parent: QModelIndex = ...) -> int:
         return len(self.data_table.index)
@@ -86,38 +82,6 @@ class ContextModel(QStandardItemModel):
     #     # if orientation == Qt.Vertical and role == Qt.DisplayRole:
     #     #     return self.items_list[section]
     #     return None
-
-# class TableModel2(QAbstractTableModel):
-#
-#     def __init__(self, addresses=None, parent=None):
-#         super(TableModel2, self).__init__(parent)
-#
-#         if addresses is None:
-#             self.addresses = []
-#         else:
-#             self.addresses = addresses
-#
-#     def data(self, index, role=Qt.DisplayRole):
-#         """ Depending on the index and role given, return data. If not
-#             returning data, return None (PySide equivalent of QT's
-#             "invalid QVariant").
-#         """
-#         if not index.isValid():
-#             return None
-#
-#         if not 0 <= index.row() < len(self.addresses):
-#             return None
-#
-#         if role == Qt.DisplayRole:
-#             name = self.addresses[index.row()]["name"]
-#             address = self.addresses[index.row()]["address"]
-#
-#             if index.column() == 0:
-#                 return name
-#             elif index.column() == 1:
-#                 return address
-#
-#         return None
 #
 #     def headerData(self, section, orientation, role=Qt.DisplayRole):
 #         """ Set the headers to be displayed. """
@@ -131,47 +95,7 @@ class ContextModel(QStandardItemModel):
 #                 return "Address"
 #
 #         return None
-#
-#     def insertRows(self, position, rows=1, index=QModelIndex()):
-#         """ Insert a row into the model. """
-#         self.beginInsertRows(QModelIndex(), position, position + rows - 1)
-#
-#         for row in range(rows):
-#             self.addresses.insert(position + row, {"name": "", "address": ""})
-#
-#         self.endInsertRows()
-#         return True
-#
-#     def removeRows(self, position, rows=1, index=QModelIndex()):
-#         """ Remove a row from the model. """
-#         self.beginRemoveRows(QModelIndex(), position, position + rows - 1)
-#
-#         del self.addresses[position:position + rows]
-#
-#         self.endRemoveRows()
-#         return True
-#
-#     def setData(self, index, value, role=Qt.EditRole):
-#         """ Adjust the data (set it to <value>) depending on the given
-#             index and role.
-#         """
-#         if role != Qt.EditRole:
-#             return False
-#
-#         if index.isValid() and 0 <= index.row() < len(self.addresses):
-#             address = self.addresses[index.row()]
-#             if index.column() == 0:
-#                 address["name"] = value
-#             elif index.column() == 1:
-#                 address["address"] = value
-#             else:
-#                 return False
-#
-#             self.dataChanged.emit(index, index)
-#             return True
-#
-#         return False
-#
+
 #     def flags(self, index):
 #         """ Set the item flags at the given index. Seems like we're
 #             implementing this function just to see how it's done, as we

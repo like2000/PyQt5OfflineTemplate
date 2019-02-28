@@ -15,7 +15,11 @@ class LsaWidget(QFrame):
         self.setLayout(QVBoxLayout())
         self.layout().addWidget(self.tableView)
 
+        self.tableView.setShowGrid(False)
         self.tableView.verticalHeader().hide()
+        self.tableView.horizontalHeader().hide()
+        self.tableView.setSelectionBehavior(QTableView.SelectRows)
+        self.tableView.setSelectionMode(QAbstractItemView.SingleSelection)
         self.tableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.tableView.setStyleSheet(
             "QListView {padding: 8;}"

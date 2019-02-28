@@ -39,7 +39,7 @@ class MainWindow(SPSWindow):
         controller200 = Controller200(self)
         controller800 = Controller800(self)
 
-        self.centralWidget().setSizes((220, 600))
+        self.centralWidget().setSizes((400, 600))
 
 
 if __name__ == '__main__':
