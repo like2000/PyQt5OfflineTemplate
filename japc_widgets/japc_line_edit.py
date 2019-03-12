@@ -43,7 +43,7 @@ class JapcLineEdit(QLineEdit):
         # self.setFixedSize(90, 35)
         self.setFixedHeight(40)
         self.setFont(QFont("Nimbus Sans", pointSize=11, weight=QFont.Bold))
-        # self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
 
         self.textEdited.connect(self.italize_text)
         self.editingFinished.connect(self.normalize_text)

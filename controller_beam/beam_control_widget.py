@@ -26,7 +26,6 @@ class BcWidget(QTabWidget):
         self.parent().rightTabWidget.addTab(self, "Beam control")
 
         self.addTab(self.statusTab(), "Status")
-        self.addTab(self.functionsTab(), "Functions")
         self.addTab(self.voltageTab(), "Voltages")
         self.setCurrentIndex(0)
 
@@ -101,6 +100,13 @@ class BcWidget(QTabWidget):
         layout.addWidget(self.c2_vmax, row, 2)
 
         row += 1
+        self.c1_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/OneTurnFeedbackPPM#Enable")
+        self.c2_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/OneTurnFeedbackPPM#Enable")
+        layout.addWidget(QLabel("Feedback", alignment=Qt.AlignRight), row, 0)
+        layout.addWidget(self.c1_otf, row, 1)
+        layout.addWidget(self.c2_otf, row, 2)
+
+        row += 1
         self.c1_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/PolarLoopPPM#Enable")
         self.c2_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/PolarLoopPPM#Enable")
         layout.addWidget(QLabel("Polar Loop", alignment=Qt.AlignRight), row, 0)
@@ -113,13 +119,6 @@ class BcWidget(QTabWidget):
         layout.addWidget(QLabel("Cavity Loop", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_cavityloop, row, 1)
         layout.addWidget(self.c2_cavityloop, row, 2)
-
-        row += 1
-        self.c1_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/OneTurnFeedbackPPM#Enable")
-        self.c2_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/OneTurnFeedbackPPM#Enable")
-        layout.addWidget(QLabel("Feedback", alignment=Qt.AlignRight), row, 0)
-        layout.addWidget(self.c1_otf, row, 1)
-        layout.addWidget(self.c2_otf, row, 2)
 
         row += 1
         self.c1_feedforward = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/FeedforwardPPM#Enable")
