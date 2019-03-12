@@ -41,7 +41,7 @@ class JapcLineEdit(QLineEdit):
         self.trim_value = deque(maxlen=2)
 
         # self.setFixedSize(90, 35)
-        self.setFixedHeight(40)
+        self.setFixedHeight(35)
         self.setFont(QFont("Nimbus Sans", pointSize=11, weight=QFont.Bold))
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
 

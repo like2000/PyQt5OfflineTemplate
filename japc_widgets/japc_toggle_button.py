@@ -37,7 +37,7 @@ class JapcToggleButton(QPushButton):
         with open("res/button_stylesheet.qss", "r") as fh:
             self.setStyleSheet(fh.read())
 
-        self.button_size = QSize(100, 40)
+        self.button_size = QSize(100, 35)
         self.setFixedSize(self.button_size)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
