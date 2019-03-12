@@ -56,9 +56,9 @@ class RfBucket():
             norm = 1
 
         H = (
-            -1/2 * self.eta * self.beta * c * delta ** 2 +
+            -1/2 * self.eta * self.beta * c * delta ** 2 * 1/norm +
             c * self.V / (2 * pi * self.p0 * self.h) * (
-                np.cos(phi) - np.cos(self.phi_s) + (phi - self.phi_s) * np.sin(self.phi_s)) * norm ** 2
+                np.cos(phi) - np.cos(self.phi_s) + (phi - self.phi_s) * np.sin(self.phi_s)) * norm
         )
 
         return H

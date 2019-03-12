@@ -2,6 +2,7 @@
 
 QPushButton#inactive {
     border: none;
+    font-size: 12px;
     background: none;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                      stop: 0 lightgray, stop: 0.32 rgba(63, 63, 63, 255),
@@ -12,7 +13,7 @@ QPushButton#enabled {
     color: white;
     border: none;
     background: none;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                       stop: 0 lightgreen, stop: 0.32 rgba(63, 63, 63, 255),
@@ -23,7 +24,7 @@ QPushButton#disabled {
     color: white;
     border: none;
     background: none;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                       stop: 0 lightcoral, stop: 0.32 rgba(63, 63, 63, 255),

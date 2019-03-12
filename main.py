@@ -2,11 +2,11 @@ import sys
 
 from PyQt5 import QtWidgets
 
+from controller_800.f800_widget import F800Widget
 from controller_lsa_dummy.lsa_widget import LsaWidget
 from controller_rf.rf_widget import RfWidget
 from controller_timings.timings_widget import TimingsWidget
 from controllers.Controller_200MHz import Controller200
-from controllers.Controller_800MHz import Controller800
 from dummies.lsa_dummy import LsaDummy
 from windows.sps_window import SPSWindow
 
@@ -40,7 +40,7 @@ class MainWindow(SPSWindow):
 
         rfbucket = RfWidget(self, 2, 1)
         controller200 = Controller200(self)
-        controller800 = Controller800(self)
+        controller800 = F800Widget(self)
 
         self.centralWidget().setSizes((300, 600))
 

@@ -40,15 +40,15 @@ class RfWidget(QTabWidget):
         with open('settings/lsa_values.pkl', 'rb') as fh:
             data = pickle.load(fh, encoding='latin1')
         t_mom, val_mom = data['t_mom'], data['val_mom']
-        t0 = 0 # 1.015
+        t0 = 0  # 1.015
 
-        interp = interp1d(data['t_mom']-t0, data['val_mom'] * 1e9)
+        interp = interp1d(data['t_mom'] - t0, data['val_mom'] * 1e9)
         momentum = interp
-        interp = interp1d(data['t_volt']-t0, data['val_volt'] * 1e6)
+        interp = interp1d(data['t_volt'] - t0, data['val_volt'] * 1e6)
         voltage = interp
-        interp = interp1d(data['t_BDot']-t0, data['val_BDot'] * 0.83)
+        interp = interp1d(data['t_BDot'] - t0, data['val_BDot'] * 0.83)
         bdot = interp
-        tt = np.linspace(t_mom.min(), t_mom.max(), 100)
+        tt = np.linspace(t_mom.min(), t_mom.max(), 40)
         area = self.rf_bucket.bucket_area_function(voltage(tt), bdot(tt), momentum(tt))
 
         qwidget = QSplitter(Qt.Vertical)
@@ -61,8 +61,8 @@ class RfWidget(QTabWidget):
         mplw_top.fig.tight_layout()
         qwidget.layout().addWidget(mplw_top)
 
-        mplw_top.axes[0].plot(tt, momentum(tt)*1e-9)
-        mplw_top.axes[1].plot(tt, voltage(tt)*1e-6)
+        mplw_top.axes[0].plot(tt, momentum(tt) * 1e-9)
+        mplw_top.axes[1].plot(tt, voltage(tt) * 1e-6)
         mplw_top.axes[2].plot(tt, bdot(tt))
         mplw_top.axes[3].plot(tt, area)
         mplw_top.axes[0].set_ylabel("Momentum [GeV/c]")
@@ -89,6 +89,7 @@ class RfWidget(QTabWidget):
         equil = [
             mplw.axes[0].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu',
                                  alpha=0.8)]
+
         # lines = mplw.axes[0].plot(xx, -self.rf_bucket.dp(xx),
         #                           xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
 
@@ -137,6 +138,7 @@ class RfWidget(QTabWidget):
                 slider.setValue(i)
                 time.sleep(0.05)
                 print(i)
+
         startButton = QPushButton("Play")
         qwidget.layout().addWidget(startButton)
         startButton.clicked.connect(play)

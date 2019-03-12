@@ -55,9 +55,9 @@ class MplWidget(QtWidgets.QGraphicsView):
         self.setLayout(layout)
 
         self.canvas = MplCanvas(rows, columns)
-        self.navBar = NavigationToolbar(self.canvas, self)
         layout.addWidget(self.canvas)
         if nav_bar:
+            self.navBar = NavigationToolbar(self.canvas, self)
             layout.addWidget(self.navBar)
 
         self.fig = self.canvas.figure
