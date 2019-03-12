@@ -1,4 +1,5 @@
 import pickle
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,7 +18,7 @@ class RfWidget(QTabWidget):
     def __init__(self, parent: QWidget = None, rows: int = 1, cols: int = 1) -> None:
         super().__init__(parent=parent)
 
-        self.rf_bucket = RfBucket(C=6911, gamma_tr=18, p0=26e9)
+        self.rf_bucket = RfBucket(C=6911, gamma_tr=18, p0=26e9, h=4620)
         self.lsa = self.parent().lsa
 
         self.rows = rows
@@ -39,14 +40,16 @@ class RfWidget(QTabWidget):
         with open('settings/lsa_values.pkl', 'rb') as fh:
             data = pickle.load(fh, encoding='latin1')
         t_mom, val_mom = data['t_mom'], data['val_mom']
+        t0 = 0 # 1.015
 
-        interp = interp1d(data['t_mom'], data['val_mom'] * 1e9)
+        interp = interp1d(data['t_mom']-t0, data['val_mom'] * 1e9)
         momentum = interp
-        interp = interp1d(data['t_volt'], data['val_volt'] * 1e6)
+        interp = interp1d(data['t_volt']-t0, data['val_volt'] * 1e6)
         voltage = interp
-        interp = interp1d(data['t_BDot'], data['val_BDot'] * 0.83)
+        interp = interp1d(data['t_BDot']-t0, data['val_BDot'] * 0.83)
         bdot = interp
-        tt = np.linspace(t_mom.min(), t_mom.max(), 500)
+        tt = np.linspace(t_mom.min(), t_mom.max(), 100)
+        area = self.rf_bucket.bucket_area_function(voltage(tt), bdot(tt), momentum(tt))
 
         qwidget = QSplitter(Qt.Vertical)
         qwidget = QFrame()
@@ -61,10 +64,11 @@ class RfWidget(QTabWidget):
         mplw_top.axes[0].plot(tt, momentum(tt)*1e-9)
         mplw_top.axes[1].plot(tt, voltage(tt)*1e-6)
         mplw_top.axes[2].plot(tt, bdot(tt))
+        mplw_top.axes[3].plot(tt, area)
         mplw_top.axes[0].set_ylabel("Momentum [GeV/c]")
         mplw_top.axes[1].set_ylabel("Voltage [MV]")
         mplw_top.axes[2].set_ylabel("BDot [?]")
-        # mplw_top.axes[3].plot(tt, val)
+        mplw_top.axes[3].set_ylabel("Bucket area [eV s]")
         marker = [ax.axvline(0, c='k', lw=1) for ax in mplw_top.axes]
 
         # Bottom plot
@@ -75,11 +79,8 @@ class RfWidget(QTabWidget):
         mplw.axes[0].set_facecolor(plt.cm.YlGnBu(256))
         mplw.axes[0].patch.set_alpha(0.4)
 
-        self.rf_bucket.V = 4.5e6
-        self.rf_bucket.h = 4620
-        self.rf_bucket.phi = 0
-        self.rf_bucket.phi_s = 0
         sampling = 200
+        self.rf_bucket.update_bucket_params(V=voltage(200), phi_s=bdot(200), p0=momentum(200))
         xx = np.linspace(-pi, pi, sampling)
         yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1, sampling)
         XX, YY = np.meshgrid(xx, yy)
@@ -88,8 +89,7 @@ class RfWidget(QTabWidget):
         equil = [
             mplw.axes[0].contour(XX, YY, self.rf_bucket.H(XX, YY) - self.rf_bucket.H(pi, 0), levels=[0], cmap='YlGnBu',
                                  alpha=0.8)]
-
-        # lines = mplw.axes[1].plot(xx, -self.rf_bucket.dp(xx),
+        # lines = mplw.axes[0].plot(xx, -self.rf_bucket.dp(xx),
         #                           xx, +self.rf_bucket.dp(xx), c='purple', lw=2)
 
         # Slider
@@ -127,7 +127,19 @@ class RfWidget(QTabWidget):
         slider.setTickPosition(QSlider.TicksBothSides)
         # slider.setRange(data['t_mom'].min(), data['t_mom'].max())
         slider.sliderMoved.connect(lambda pos: update(pos * data['t_mom'].max() / 100))
+        slider.valueChanged.connect(lambda pos: update(pos * data['t_mom'].max() / 100))
         qwidget.layout().addWidget(slider)
+
+        # Button
+        # ======
+        def play():
+            for i in range(0, 100, 2):
+                slider.setValue(i)
+                time.sleep(0.05)
+                print(i)
+        startButton = QPushButton("Play")
+        qwidget.layout().addWidget(startButton)
+        startButton.clicked.connect(play)
 
         return qwidget
 

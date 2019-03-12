@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from scipy.constants import c, e, m_p, pi
 
@@ -6,7 +8,7 @@ from algorithms.pdf_integrators_2d import dblquad
 
 class RfBucket():
 
-    def __init__(self, C=1, gamma_tr=1, p0=1) -> None:
+    def __init__(self, C=1, gamma_tr=1, p0=1, h=1) -> None:
         """Mass is in eV; p0 is in eV/c"""
         self.mass = m_p * c ** 2 / e # in eV
 
@@ -15,7 +17,7 @@ class RfBucket():
         self.gamma_tr = gamma_tr
 
         self.V = 1
-        self.h = 1
+        self.h = h
         self.phi = 0
         self.phi_s = 0
 
@@ -74,9 +76,36 @@ class RfBucket():
 
         return np.sqrt(A) * norm
 
-    def emittance(self, f, x0, x1, p0=p0):
+    def emittance(self, f, x0, x1, normalized=False):
         conv = 2 * pi * self.h / self.C
         Q, error = dblquad(lambda y, x: 1, x0, x1,
                            lambda x: 0, f)
 
-        return Q * 2 * self.p0 / c * 1 / conv
+        if normalized:
+            return Q * 2 * self.p0 / c * 1 / conv
+        else:
+            return Q * 2
+
+    def bucket_area(self):
+
+        return self.emittance(self.dp, -pi, pi)
+
+    def update_bucket_params(self, V, phi_s, p0):
+
+        self.phi_s = phi_s
+        self.p0 = p0
+        self.V = V
+
+    def bucket_area_function(self, V, phi_s, p0):
+        V0, phi_s0, p00 = self.V, self.phi_s, self.p0
+        area = []
+
+        t0 = time.clock()
+        for (Vi, phi_si, p0i) in zip(V, phi_s, p0):
+            self.update_bucket_params(Vi, phi_si, p0i)
+            area.append(self.bucket_area())
+
+        print(f"Time elapsed: {time.clock() - t0}")
+        self.V, self.phi_s, self.p0 = V0, phi_s0, p00
+
+        return np.array(area)

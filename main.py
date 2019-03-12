@@ -4,6 +4,7 @@ from PyQt5 import QtWidgets
 
 from controller_lsa_dummy.lsa_widget import LsaWidget
 from controller_rf.rf_widget import RfWidget
+from controller_timings.timings_widget import TimingsWidget
 from controllers.Controller_200MHz import Controller200
 from controllers.Controller_800MHz import Controller800
 from dummies.lsa_dummy import LsaDummy
@@ -13,13 +14,15 @@ from windows.sps_window import SPSWindow
 class MainWindow(SPSWindow):
 
     def __init__(self):
-        super().__init__(geometry=(200, 200, 1200, 800))
+        super().__init__(geometry=(200, 200, 1300, 800))
 
         self.lsa = LsaDummy()
 
         lsa_dummy = LsaWidget()
+        timing = TimingsWidget()
         self.leftTabWidget.setLayout(QtWidgets.QVBoxLayout())
         self.leftTabWidget.layout().addWidget(lsa_dummy)
+        self.leftTabWidget.layout().addWidget(timing)
 
         # self.create_dummy_selector()
         # self.list.setModel(ContextModel(self.list))
@@ -39,7 +42,7 @@ class MainWindow(SPSWindow):
         controller200 = Controller200(self)
         controller800 = Controller800(self)
 
-        self.centralWidget().setSizes((400, 600))
+        self.centralWidget().setSizes((300, 600))
 
 
 if __name__ == '__main__':

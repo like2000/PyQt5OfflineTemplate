@@ -52,15 +52,18 @@ class LsaModel(QAbstractTableModel):
         # elif (role == Qt.BackgroundRole and val in self.existing_context):
         #     return QBrush(QColor("white"))
         elif (role == Qt.ForegroundRole):
-            if j==0:
-                if state=="ACTIVE":
+            if j == 0:
+                if state == "ACTIVE":
                     return QColor("lime")
-                elif state=="RESIDENT":
+                elif state == "RESIDENT":
                     return QColor("yellow")
-                elif state=="OPERTIONAL":
+                elif state == "OPERTIONAL":
                     return QColor("black")
-            else:
-                return QColor("white")
+            if j == 1:
+                if state == "OPERATIONAL":
+                    return QColor("black")
+                else:
+                    return QColor("white")
         else:
             return QVariant()
 
