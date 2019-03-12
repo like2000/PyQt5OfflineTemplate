@@ -3,6 +3,7 @@ import sys
 from PyQt5 import QtWidgets
 
 from controller_800.f800_widget import F800Widget
+from controller_beam.beam_control_widget import BcWidget
 from controller_lsa_dummy.lsa_widget import LsaWidget
 from controller_rf.rf_widget import RfWidget
 from controller_timings.timings_widget import TimingsWidget
@@ -39,6 +40,7 @@ class MainWindow(SPSWindow):
         # # model.appendRow(ContextModel.styled_item(["LHCBCMS_3Inj_Q20_2018_V1", "LHC1", "Operational"]))
 
         rfbucket = RfWidget(self, 2, 1)
+        beamcontrol = BcWidget(self)
         controller200 = Controller200(self)
         controller800 = F800Widget(self)
 

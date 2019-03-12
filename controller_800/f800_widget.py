@@ -45,14 +45,13 @@ class F800Widget(QTabWidget):
                        row, 0)
 
         row += 1
-        grid = plt.GridSpec(2, 2, wspace=0.4, hspace=0.3)
-
         mplw = MplWidget(1, 1, nav_bar=False)
-        fig = mplw.fig
-        ax1 = fig.add_subplot(grid[0, :])
-        ax2 = fig.add_subplot(grid[1, 0])
-        ax3 = fig.add_subplot(grid[1, 1])
-        fig.tight_layout()
+        mplw.fig.clf()
+        grid = plt.GridSpec(2, 2, wspace=0.4, hspace=0.3)
+        ax1 = mplw.fig.add_subplot(grid[0, :])
+        ax2 = mplw.fig.add_subplot(grid[1, 0])
+        ax3 = mplw.fig.add_subplot(grid[1, 1])
+        mplw.fig.tight_layout()
         layout.addWidget(mplw, row, 0, 1, 4)
 
         row += 1
@@ -76,71 +75,70 @@ class F800Widget(QTabWidget):
 
         row += 1
         layout.addWidget(QLabel("Cavity 1"), row, 1)
-        layout.addWidget(QLabel("Cavity 2"), row, 3)
+        layout.addWidget(QLabel("Cavity 2"), row, 2)
 
         row += 1
-        layout.addWidget(SPSWindow.h_line(), row, 0, 1, 4)
+        layout.addWidget(SPSWindow.h_line(), row, 0, 1, 3)
 
         row += 1
         self.c1_enable = JapcToggleButton(self.lsa)
         self.c2_enable = JapcToggleButton(self.lsa)
         layout.addWidget(QLabel("Cavity active", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_enable, row, 1)
-        layout.addWidget(self.c2_enable, row, 3)
+        layout.addWidget(self.c2_enable, row, 2)
 
         row += 1
         self.c1_vmin = JapcLineEdit(self.lsa)
         self.c2_vmin = JapcLineEdit(self.lsa)
         layout.addWidget(QLabel("Vmin", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_vmin, row, 1)
-        layout.addWidget(self.c2_vmin, row, 3)
+        layout.addWidget(self.c2_vmin, row, 2)
 
         row += 1
         self.c1_vmax = JapcLineEdit(self.lsa)
         self.c2_vmax = JapcLineEdit(self.lsa)
         layout.addWidget(QLabel("Vmax", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_vmax, row, 1)
-        layout.addWidget(self.c2_vmax, row, 3)
+        layout.addWidget(self.c2_vmax, row, 2)
 
         row += 1
         self.c1_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/PolarLoopPPM#Enable")
         self.c2_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/PolarLoopPPM#Enable")
         layout.addWidget(QLabel("Polar Loop", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_polarloop, row, 1)
-        layout.addWidget(self.c2_polarloop, row, 3)
+        layout.addWidget(self.c2_polarloop, row, 2)
 
         row += 1
         self.c1_cavityloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/Operation#Enable")
         self.c2_cavityloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/Operation#Enable")
         layout.addWidget(QLabel("Cavity Loop", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_cavityloop, row, 1)
-        layout.addWidget(self.c2_cavityloop, row, 3)
+        layout.addWidget(self.c2_cavityloop, row, 2)
 
         row += 1
         self.c1_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/OneTurnFeedbackPPM#Enable")
         self.c2_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/OneTurnFeedbackPPM#Enable")
         layout.addWidget(QLabel("Feedback", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_otf, row, 1)
-        layout.addWidget(self.c2_otf, row, 3)
+        layout.addWidget(self.c2_otf, row, 2)
 
         row += 1
         self.c1_feedforward = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/FeedforwardPPM#Enable")
         self.c2_feedforward = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/FeedforwardPPM#Enable")
         layout.addWidget(QLabel("Feedforward", alignment=Qt.AlignRight), row, 0)
         layout.addWidget(self.c1_feedforward, row, 1)
-        layout.addWidget(self.c2_feedforward, row, 3)
+        layout.addWidget(self.c2_feedforward, row, 2)
 
         row += 1
         layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Expanding),
                        row, 0)
 
         # FINALIZE LAYOUT
-        layout.setHorizontalSpacing(40)
+        layout.setHorizontalSpacing(20)
         layout.setVerticalSpacing(10)
-        layout.setColumnStretch(0, 1)
-        layout.setColumnStretch(1, 1)
-        layout.setColumnStretch(2, 1)
-        layout.setColumnStretch(3, 1)
+        # layout.setColumnStretch(0, 1)
+        # layout.setColumnStretch(1, 2)
+        # layout.setColumnStretch(2, 1)
 
         return qwidget
 
