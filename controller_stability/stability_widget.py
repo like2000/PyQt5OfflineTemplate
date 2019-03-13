@@ -54,8 +54,9 @@ class StabilityWidget(QTabWidget):
         grid_layout.addWidget(QComboBox(), row, 1)
 
         row += 1
-        grid_layout.addItem(QSpacerItem(10, 60, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
+        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
 
+        # LANDAU DAMPING
         # =======================================================================
         row += 1
         label = QLabel("800 MHz - Landau Damping", alignment=Qt.AlignHCenter)
@@ -75,22 +76,21 @@ class StabilityWidget(QTabWidget):
         row += 1
         grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
 
+        # CEBU
         # =======================================================================
         row += 1
-        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Expanding), row, 0)
         label = QLabel("CEBU", alignment=Qt.AlignHCenter)
         label.setStyleSheet("""font-size: 20px;""")
         grid_layout.addWidget(label, row, 0, 1, 4)
         row += 1
         grid_layout.addWidget(SPSWindow.h_line(), row, 0, 1, 4)
-        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Fixed),
-                            row, 0)
 
         row += 1
         grid_layout.addWidget(QLabel("Longitudinal blow-up", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
         grid_layout.addWidget(JapcLineEdit(self.lsa), row, 1)
 
-        grid_layout.addWidget(JapcLineEdit(self.lsa), row, 1)
+        row += 1
+        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Expanding), row, 0)
 
         # row += 1
         # grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Expanding),

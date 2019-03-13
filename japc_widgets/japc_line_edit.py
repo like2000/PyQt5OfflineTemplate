@@ -1,10 +1,9 @@
-import jpype
-import numpy as np
-from collections import deque
 from abc import abstractmethod
+from collections import deque
 
-from PyQt5.QtGui import *
+import numpy as np
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 
@@ -48,31 +47,27 @@ class JapcLineEdit(QLineEdit):
         self.textEdited.connect(self.italize_text)
         self.editingFinished.connect(self.normalize_text)
 
-
     def update_parameter(self, parameter, fromLSA=True):
         self.parameter = parameter
         # print(parameter)
         self.japc.add_subscribe(parameter, fromLSA=False)
         self.japc.newDataReceived.connect(self.update_value)
 
-
     def update_changed(self, value):
         self.trim_value.append(float(value))
         self.is_changed = False
 
-
     def set_changed(self):
         self.is_changed = True
 
-
     def normalize_text(self):
-        self.setStyleSheet("""color: white; font-style: normal""")
+        # self.setStyleSheet("""color: white; font-style: normal""")
+        self.setStyleSheet("""color: black; font-style: normal""")
         self.set_changed()
 
-
     def italize_text(self):
-        self.setStyleSheet("""color: khaki; font-style: italic; font-weight: normal""")
-
+        # self.setStyleSheet("""color: khaki; font-style: italic; font-weight: normal""")
+        self.setStyleSheet("""color: red; font-style: italic; font-weight: normal""")
 
     def _getter(self):
 
@@ -92,7 +87,6 @@ class JapcLineEdit(QLineEdit):
 
         return value
 
-
     def _setter(self, value):
 
         # if value is None:
@@ -109,7 +103,6 @@ class JapcLineEdit(QLineEdit):
 
         return value
 
-
     @pyqtSlot(str)
     def update_value(self, parameter):
         if parameter in self.parameter:
@@ -125,7 +118,6 @@ class JapcLineEdit(QLineEdit):
             #     print(self.parameter, self.japc.user, self.offset())
 
             self.update_changed(value)
-
 
     @abstractmethod
     def lsa_set_value(self):
@@ -164,7 +156,6 @@ class JapcLineEdit(QLineEdit):
         # self.update_changed(value)
         # # ===========================================
 
-
     @abstractmethod
     def lsa_revert_value(self):
         value = self.trim_value[0]
@@ -188,4 +179,4 @@ class JapcLineEdit(QLineEdit):
             self.lsa.trim_settings(parameter[1], frac, comment="Revert trim from YaRFT")
         except IndexError:
             # print(parameter, value)
-            self.lsa.trim_settings(parameter[0], value ,comment="Revert trim from YaRFT")
+            self.lsa.trim_settings(parameter[0], value, comment="Revert trim from YaRFT")

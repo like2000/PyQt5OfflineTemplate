@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+from japc_widgets.japc_line_edit import JapcLineEdit
 from japc_widgets.japc_toggle_button import JapcToggleButton
 from widgets.mpl_widget import MplWidget
 from windows.sps_window import SPSWindow
@@ -21,11 +22,22 @@ class NAdiabaticWidget(QTabWidget):
         # self.setTabShape(QTabWidget.Triangular)
         self.parent().rightTabWidget.addTab(self, "Non-adiabatic processes")
 
-        self.addTab(self.voltageTab(), "Control")
-        self.addTab(self.statusTab(), "Status")
+        self.addTab(self.rotationTab(), "Bunch rotation")
+        self.addTab(self.debunchingTab(), "Debunching")
+        self.addTab(self.transitionTab(), "Transition")
         self.setCurrentIndex(0)
 
-    def voltageTab(self):
+    def debunchingTab(self):
+        qwidget = QWidget()
+
+        return qwidget
+
+    def transitionTab(self):
+        qwidget = QWidget()
+
+        return qwidget
+
+    def rotationTab(self):
         qwidget = QWidget()
         parent_layout = QVBoxLayout()
         qwidget.setLayout(parent_layout)
@@ -37,19 +49,56 @@ class NAdiabaticWidget(QTabWidget):
 
         # GRID LAYOUT - CONTROLS
         # ======================
+        v_spacing = 20
         row = -1
         # self.layout.addWidget(QH)
 
         row += 1
-        grid_layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed),
-                       row, 0)
+        label = QLabel("Phase jump (FT)", alignment=Qt.AlignHCenter)
+        label.setStyleSheet("""font-size: 20px;""")
+        grid_layout.addWidget(label, row, 0, 1, 2)
+        grid_layout.addWidget(JapcToggleButton(self.lsa), row, 2)
+        row += 1
+        grid_layout.addWidget(SPSWindow.h_line(), row, 0, 1, 4)
 
         row += 1
-        grid_layout.addWidget(QLabel("200 MHz Main RF", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
+        grid_layout.addWidget(QLabel("Start phase jump", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
+        grid_layout.addWidget(JapcToggleButton(self.lsa), row, 1)
+        grid_layout.addWidget(JapcLineEdit(self.lsa), row, 2)
 
         row += 1
-        grid_layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Expanding),
-                       row, 0)
+        grid_layout.addWidget(QLabel("Jump to stable phase - delay from start", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
+        grid_layout.addWidget(JapcToggleButton(self.lsa), row, 1)
+        grid_layout.addWidget(JapcLineEdit(self.lsa), row, 2)
+
+        row += 1
+        grid_layout.addWidget(QLabel("Main RF off - delay from start", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
+        grid_layout.addWidget(JapcToggleButton(self.lsa), row, 1)
+        grid_layout.addWidget(JapcLineEdit(self.lsa), row, 2)
+
+        row += 1
+        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
+        # ===============================================================================================
+
+        row += 1
+        label = QLabel("Non-adiabatic voltage step (AWAKE)", alignment=Qt.AlignHCenter)
+        label.setStyleSheet("""font-size: 20px;""")
+        grid_layout.addWidget(label, row, 0, 1, 2)
+        grid_layout.addWidget(JapcToggleButton(self.lsa), row, 2)
+        row += 1
+        grid_layout.addWidget(SPSWindow.h_line(), row, 0, 1, 4)
+
+        row += 1
+        grid_layout.addWidget(QLabel("Total voltage 200 MHz", alignment=Qt.AlignRight | Qt.AlignVCenter), row,
+                              0)
+        # grid_layout.addWidget(JapcToggleButton(self.lsa), row, 1)
+        grid_layout.addWidget(JapcLineEdit(self.lsa), row, 2)
+
+        row += 1
+        grid_layout.addItem(QSpacerItem(10, v_spacing, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
+        # ===============================================================================================
+
+        grid_layout.setHorizontalSpacing(20)
 
         # VBOX LAYOUT DIAGNOSTICS
         # =======================
