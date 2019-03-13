@@ -45,8 +45,8 @@ class MainWindow(SPSWindow):
         rfbucket = RfWidget(self, 2, 1)
         controller200 = F200Widget(self)
         controller800 = F800Widget(self)
-        stability = StabilityWidget(self)
         processes = NAdiabaticWidget(self)
+        stability = StabilityWidget(self)
         self.rightTabWidget.setCurrentIndex(5)
 
         self.centralWidget().setSizes((300, 600))
