@@ -34,8 +34,8 @@ sns.set(context='notebook', style='darkgrid',  # palette='tab10',
 
 class MplCanvas(Canvas):
 
-    def __init__(self, rows, columns):
-        fig, axes = plt.subplots(rows, columns)
+    def __init__(self, rows, columns, **kwargs):
+        fig, axes = plt.subplots(rows, columns, **kwargs)
 
         # fig = Figure()
         # ax1 = fig.add_subplot(211)
@@ -48,13 +48,13 @@ class MplCanvas(Canvas):
 
 class MplWidget(QtWidgets.QGraphicsView):
 
-    def __init__(self, rows=1, columns=1, nav_bar=True, parent=None):
+    def __init__(self, rows=1, columns=1, nav_bar=True, parent=None, **kwargs):
         QtWidgets.QWidget.__init__(self, parent)  # Inherit from QWidget
         # super(MplWidget, self).__init__(parent)
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
 
-        self.canvas = MplCanvas(rows, columns)
+        self.canvas = MplCanvas(rows, columns, **kwargs)
         layout.addWidget(self.canvas)
         if nav_bar:
             self.navBar = NavigationToolbar(self.canvas, self)

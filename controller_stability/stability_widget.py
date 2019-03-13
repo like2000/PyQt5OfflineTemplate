@@ -8,7 +8,7 @@ from widgets.mpl_widget import MplWidget
 from windows.sps_window import SPSWindow
 
 
-class BcWidget(QTabWidget):
+class StabilityWidget(QTabWidget):
 
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -19,7 +19,7 @@ class BcWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "Beam control")
+        self.parent().rightTabWidget.addTab(self, "Beam stabilization")
 
         self.addTab(self.statusTab(), "Status")
         self.addTab(self.voltageTab(), "Voltages")
@@ -39,7 +39,7 @@ class BcWidget(QTabWidget):
                        row, 0)
 
         row += 1
-        mplw = MplWidget(1, 1, nav_bar=False)
+        mplw = MplWidget(1, 1, nav_bar=False, sharex=True)
         mplw.fig.clf()
         grid = plt.GridSpec(2, 2, wspace=0.4, hspace=0.3)
         ax1 = mplw.fig.add_subplot(grid[0, :])

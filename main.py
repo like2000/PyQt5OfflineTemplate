@@ -6,7 +6,9 @@ from controller_200.f200_widget import F200Widget
 from controller_800.f800_widget import F800Widget
 from controller_beam.beam_control_widget import BcWidget
 from controller_lsa_dummy.lsa_widget import LsaWidget
+from controller_non_adiabatic.non_adiabatic_widget import NAdiabaticWidget
 from controller_rf.rf_widget import RfWidget
+from controller_stability.stability_widget import StabilityWidget
 from controller_timings.timings_widget import TimingsWidget
 from dummies.lsa_dummy import LsaDummy
 from windows.sps_window import SPSWindow
@@ -43,6 +45,9 @@ class MainWindow(SPSWindow):
         rfbucket = RfWidget(self, 2, 1)
         controller200 = F200Widget(self)
         controller800 = F800Widget(self)
+        stability = StabilityWidget(self)
+        processes = NAdiabaticWidget(self)
+        self.rightTabWidget.setCurrentIndex(5)
 
         self.centralWidget().setSizes((300, 600))
 

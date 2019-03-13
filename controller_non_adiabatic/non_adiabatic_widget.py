@@ -8,7 +8,7 @@ from widgets.mpl_widget import MplWidget
 from windows.sps_window import SPSWindow
 
 
-class BcWidget(QTabWidget):
+class NAdiabaticWidget(QTabWidget):
 
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
@@ -19,38 +19,49 @@ class BcWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "Beam control")
+        self.parent().rightTabWidget.addTab(self, "Non-adiabatic processes")
 
+        self.addTab(self.voltageTab(), "Control")
         self.addTab(self.statusTab(), "Status")
-        self.addTab(self.voltageTab(), "Voltages")
         self.setCurrentIndex(0)
 
     def voltageTab(self):
         qwidget = QWidget()
-        layout = QGridLayout()
-        qwidget.setLayout(layout)
+        parent_layout = QVBoxLayout()
+        qwidget.setLayout(parent_layout)
 
-        # ASSEMBLE ELEMENTS
+        grid_layout = QGridLayout()
+        layout = QVBoxLayout()
+        parent_layout.addLayout(grid_layout)
+        parent_layout.addLayout(layout)
+
+        # GRID LAYOUT - CONTROLS
+        # ======================
         row = -1
         # self.layout.addWidget(QH)
 
         row += 1
-        layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed),
+        grid_layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed),
                        row, 0)
 
         row += 1
-        mplw = MplWidget(1, 1, nav_bar=False)
-        mplw.fig.clf()
-        grid = plt.GridSpec(2, 2, wspace=0.4, hspace=0.3)
-        ax1 = mplw.fig.add_subplot(grid[0, :])
-        ax2 = mplw.fig.add_subplot(grid[1, 0])
-        ax3 = mplw.fig.add_subplot(grid[1, 1])
+        grid_layout.addWidget(QLabel("200 MHz Main RF", alignment=Qt.AlignRight | Qt.AlignVCenter), row, 0)
+
+        row += 1
+        grid_layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Expanding),
+                       row, 0)
+
+        # VBOX LAYOUT DIAGNOSTICS
+        # =======================
+        mplw = MplWidget(2, 1, nav_bar=False, sharex=True)
+        ax1, ax2= mplw.axes
+
+        ax1.set_ylabel("Peak detected")
+        ax2.set_ylabel("Bunch length")
+        ax2.set_xlabel("Time [ms]")
+
         mplw.fig.tight_layout()
-        layout.addWidget(mplw, row, 0, 1, 4)
-
-        row += 1
-        layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Fixed),
-                       row, 0)
+        layout.addWidget(mplw)
 
         return qwidget
 
@@ -151,41 +162,6 @@ class BcWidget(QTabWidget):
 
         row += 1
         layout.addItem(QSpacerItem(10, 20, QSizePolicy.Expanding, QSizePolicy.Fixed), row, 0)
-
-        # row += 1
-        # self.c1_enable = JapcToggleButton(self.lsa)
-        # self.c2_enable = JapcToggleButton(self.lsa)
-        # layout.addWidget(QLabel("Cavity active", alignment=Qt.AlignRight), row, 0)
-        # layout.addWidget(self.c1_enable, row, 1)
-        # layout.addWidget(self.c2_enable, row, 2)
-        #
-        # row += 1
-        # self.c1_vmin = JapcLineEdit(self.lsa)
-        # self.c2_vmin = JapcLineEdit(self.lsa)
-        # layout.addWidget(QLabel("Vmin", alignment=Qt.AlignRight), row, 0)
-        # layout.addWidget(self.c1_vmin, row, 1)
-        # layout.addWidget(self.c2_vmin, row, 2)
-        #
-        # row += 1
-        # self.c1_vmax = JapcLineEdit(self.lsa)
-        # self.c2_vmax = JapcLineEdit(self.lsa)
-        # layout.addWidget(QLabel("Vmax", alignment=Qt.AlignRight), row, 0)
-        # layout.addWidget(self.c1_vmax, row, 1)
-        # layout.addWidget(self.c2_vmax, row, 2)
-        #
-        # row += 1
-        # self.c1_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/OneTurnFeedbackPPM#Enable")
-        # self.c2_otf = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/OneTurnFeedbackPPM#Enable")
-        # layout.addWidget(QLabel("Feedback", alignment=Qt.AlignRight), row, 0)
-        # layout.addWidget(self.c1_otf, row, 1)
-        # layout.addWidget(self.c2_otf, row, 2)
-        #
-        # row += 1
-        # self.c1_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c1/PolarLoopPPM#Enable")
-        # self.c2_polarloop = JapcToggleButton(self.lsa, "SPS800.CavityLoop.c2/PolarLoopPPM#Enable")
-        # layout.addWidget(QLabel("Polar Loop", alignment=Qt.AlignRight), row, 0)
-        # layout.addWidget(self.c1_polarloop, row, 1)
-        # layout.addWidget(self.c2_polarloop, row, 2)
 
         row += 1
         layout.addItem(QSpacerItem(10, 10, QSizePolicy.Expanding, QSizePolicy.Expanding),
