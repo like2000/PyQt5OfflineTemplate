@@ -20,7 +20,7 @@ class NAdiabaticWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "Non-adiabatic processes")
+        self.parent().centralWidget().addTab(self, "Non-adiabatic processes")
 
         self.addTab(self.rotationTab(), "Bunch rotation")
         self.addTab(self.debunchingTab(), "Debunching")

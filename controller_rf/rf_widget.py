@@ -28,7 +28,7 @@ class RfWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "RF Bucket")
+        self.parent().centralWidget().addTab(self, "RF Bucket")
 
         self.addTab(self.statusTab(), "Status")
         # self.addTab(self.functionsTab(), "Functions")

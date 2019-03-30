@@ -24,17 +24,16 @@ class SPSWindow(QtWidgets.QMainWindow):
             self.setStyleSheet(fh.read())
 
         # ADD SPLITTER
-        splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        self.setCentralWidget(splitter)
+        self.setCentralWidget(QtWidgets.QSplitter(QtCore.Qt.Horizontal))
 
         # ADD SUBWIDGETS
         self.leftTabWidget = QtWidgets.QTabWidget()
-        splitter.addWidget(self.leftTabWidget)
+        self.centralWidget().addWidget(self.leftTabWidget)
 
         self.rightTabWidget = QtWidgets.QTabWidget()
-        splitter.addWidget(self.rightTabWidget)
+        self.centralWidget().addWidget(self.rightTabWidget)
 
-        splitter.setSizes((300, 600))
+        self.centralWidget().setSizes((300, 600))
 
         self.show()
 

@@ -23,7 +23,7 @@ class F200Widget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "200 MHz")
+        self.parent().centralWidget().addTab(self, "200 MHz")
 
         self.addTab(self.statusTab(), "Status")
         self.addTab(self.functionsTab(), "Functions")

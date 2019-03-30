@@ -19,7 +19,7 @@ class BcWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "Beam control")
+        self.parent().centralWidget().addTab(self, "Beam control")
 
         self.addTab(self.statusTab(), "Status")
         self.addTab(self.voltageTab(), "Voltages")

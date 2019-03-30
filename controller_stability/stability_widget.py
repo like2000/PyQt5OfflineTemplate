@@ -20,7 +20,7 @@ class StabilityWidget(QTabWidget):
     def initUi(self):
         self.setTabPosition(QTabWidget.East)
         # self.setTabShape(QTabWidget.Triangular)
-        self.parent().rightTabWidget.addTab(self, "Beam Stability")
+        self.parent().centralWidget().addTab(self, "Beam Stability")
 
         self.addTab(self.voltageTab(), "Voltages")
         self.addTab(self.statusTab(), "Control")

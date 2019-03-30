@@ -37,7 +37,7 @@ class LsaModel(QAbstractTableModel):
         state = self.data_table.iloc[i, 2]
 
         if (role == Qt.FontRole):
-            font = QFont("Helvetica", 10, QFont.Black)
+            font = QFont("Roboto", 10.5, QFont.Black)
             return font
         # elif (role == Qt.SizeHintRole):
         #     size = QSize(10, cw.height() + 20)
@@ -57,7 +57,7 @@ class LsaModel(QAbstractTableModel):
                     return QColor("lime")
                 elif state == "RESIDENT":
                     return QColor("yellow")
-                elif state == "OPERTIONAL":
+                elif state == "OPERATIONAL":
                     return QColor("black")
             if j == 1:
                 if state == "OPERATIONAL":
