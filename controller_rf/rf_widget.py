@@ -6,10 +6,11 @@ import numpy as np
 import pyqtgraph as pg
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from scipy.constants import c, e, m_p
 from scipy.constants import pi
 from scipy.interpolate import interp1d
 
-from controller_rf.rf_bucket import RfBucket
+from controller_rf.new_rf_bucket import RfBucket
 from widgets.mpl_widget import MplWidget
 
 
@@ -18,7 +19,6 @@ class RfWidget(QTabWidget):
     def __init__(self, parent: QWidget = None, rows: int = 1, cols: int = 1) -> None:
         super().__init__(parent=parent)
 
-        self.rf_bucket = RfBucket(C=6911, gamma_tr=18, p0=26e9, h=4620)
         self.lsa = self.parent().lsa
 
         self.rows = rows
@@ -35,6 +35,9 @@ class RfWidget(QTabWidget):
         # self.setCurrentIndex(2)
 
     def statusTab(self):
+        qwidget = QFrame()
+        qwidget.setLayout(QVBoxLayout())
+
         # READ SETTINGS
         # =============
         with open('settings/lsa_values.pkl', 'rb') as fh:
@@ -46,17 +49,27 @@ class RfWidget(QTabWidget):
         momentum = interp
         interp = interp1d(data['t_volt'] - t0, data['val_volt'] * 1e6)
         voltage = interp
-        interp = interp1d(data['t_BDot'] - t0, data['val_BDot'] * 0.83)
+        interp = interp1d(data['t_BDot'] - t0, data['val_BDot'])
         bdot = interp
-        tt = np.linspace(t_mom.min(), t_mom.max(), 40)
-        area = self.rf_bucket.bucket_area_function(voltage(tt), bdot(tt), momentum(tt))
+        interp = interp1d(data['t_BA'], data['val_BA'])
+        BA = interp
 
-        qwidget = QSplitter(Qt.Vertical)
-        qwidget = QFrame()
-        qwidget.setLayout(QVBoxLayout())
+        mass = m_p * c ** 2 / e
+
+        def eta(time):
+            p0 = momentum(time)
+            gamma = np.sqrt(1 + (p0 / mass) ** 2)
+            return 18. ** -2 - gamma ** -2
+
+        # RF Bucket
+        # =========
+        self.rf_bucket = RfBucket(momentum=momentum, bdot=bdot, voltage=voltage, eta=eta, ratio=0.0)
 
         # Top plot
         # ========
+        tt = np.linspace(t_mom.min(), t_mom.max(), 40)
+        area = [self.rf_bucket.update_parameters(t).get_emittance() for t in tt]
+
         mplw_top = MplWidget(2, 2, nav_bar=False)
         mplw_top.fig.tight_layout()
         qwidget.layout().addWidget(mplw_top)
@@ -64,6 +77,7 @@ class RfWidget(QTabWidget):
         mplw_top.axes[0].plot(tt, momentum(tt) * 1e-9)
         mplw_top.axes[1].plot(tt, voltage(tt) * 1e-6)
         mplw_top.axes[2].plot(tt, bdot(tt))
+        mplw_top.axes[3].plot(tt, BA(tt), c='orange')
         mplw_top.axes[3].plot(tt, area)
         mplw_top.axes[0].set_ylabel("Momentum [GeV/c]")
         mplw_top.axes[1].set_ylabel("Voltage [MV]")
@@ -80,7 +94,6 @@ class RfWidget(QTabWidget):
         mplw.axes[0].patch.set_alpha(0.4)
 
         sampling = 200
-        self.rf_bucket.update_bucket_params(V=voltage(200), phi_s=bdot(200), p0=momentum(200))
         xx = np.linspace(-pi, pi, sampling)
         yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1, sampling)
         XX, YY = np.meshgrid(xx, yy)
@@ -98,9 +111,7 @@ class RfWidget(QTabWidget):
         def update(pos):
             [m.set_xdata(pos) for m in marker]
 
-            self.rf_bucket.p0 = momentum(pos)
-            self.rf_bucket.phi_s = bdot(pos)
-            self.rf_bucket.V = voltage(pos)
+            self.rf_bucket.update_parameters(pos)
 
             yy = np.linspace(-self.rf_bucket.dp(xx).max() * 1.1, self.rf_bucket.dp(xx).max() * 1.1, sampling)
             XX, YY = np.meshgrid(xx, yy)
